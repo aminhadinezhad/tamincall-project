@@ -38,6 +38,7 @@ class CallsTable
             ->columns([
                 TextColumn::make('created_at')
                     ->label('تاریخ تماس')
+                    ->visibleFrom('md')
                     ->formatStateUsing(fn ($state): string => Persian::date($state))
                     ->sortable(),
 
@@ -61,26 +62,31 @@ class CallsTable
 
                 TextColumn::make('salesAgent.name')
                     ->label('کارشناس فروش')
+                    ->visibleFrom('md')
                     ->placeholder('—'),
 
                 TextColumn::make('request')
                     ->label('درخواست')
+                    ->visibleFrom('lg')
                     ->limit(20)
                     ->tooltip(fn (Call $record): string => $record->request)
                     ->toggleable(),
 
                 TextColumn::make('status')
                     ->label('وضعیت')
+                    ->visibleFrom('md')
                     ->badge(),
 
                 TextColumn::make('follow_up_on')
                     ->label('تاریخ پیگیری')
+                    ->visibleFrom('md')
                     ->formatStateUsing(fn ($state, Call $record): string => $record->status === CallStatus::AwaitingFollowUp ? Persian::date($state) : '—')
                     ->color(fn (Call $record): ?string => $record->status === CallStatus::AwaitingFollowUp && $record->follow_up_on->lt(today()) ? 'danger' : null)
                     ->sortable(),
 
                 IconColumn::make('result.purchased')
                     ->label('خرید کرد؟')
+                    ->visibleFrom('md')
                     ->boolean()
                     ->placeholder('—'),
 
@@ -105,7 +111,7 @@ class CallsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('follow_up_on')
-            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersLayout(FiltersLayout::AboveContentCollapsible)
             ->filtersFormColumns(5)
             ->filters([
                 SelectFilter::make('sales_agent_id')

@@ -42,6 +42,16 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(PanelsRenderHook::HEAD_START, fn (): string => collect(['Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold'])
                 ->map(fn (string $weight): string => '<link rel="preload" href="'.e(asset("fonts/kalameh/KalamehWeb(FaNum)-{$weight}.woff2")).'" as="font" type="font/woff2" crossorigin>')
                 ->implode(''))
+            // web app: added to a phone's home screen it opens full screen with its own icon
+            ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => implode('', [
+                '<link rel="manifest" href="'.e(asset('manifest.webmanifest')).'">',
+                '<meta name="theme-color" content="#091a3b">',
+                '<meta name="mobile-web-app-capable" content="yes">',
+                '<meta name="apple-mobile-web-app-capable" content="yes">',
+                '<meta name="apple-mobile-web-app-status-bar-style" content="black">',
+                '<meta name="apple-mobile-web-app-title" content="تامین کال">',
+                '<link rel="apple-touch-icon" href="'.e(asset('ico/apple-touch-icon.png')).'">',
+            ]))
             ->darkMode(false)
             ->colors([
                 'primary' => Color::hex('#164194'),
