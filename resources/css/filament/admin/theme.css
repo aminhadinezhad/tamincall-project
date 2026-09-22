@@ -4,31 +4,58 @@
 @source '../../../../resources/views/filament/**/*';
 
 /* ==========================================================================
-   Tamin Call: the Tamin Falat look
-   Tokens from the redesigned taminfalat.com (chrome.css): navy brand bar, the
-   company blue for actions, orange for "today" and the active marker, white
-   16px cards on a pale blue page. Light only (darkMode(false) in the panel).
+   Tamin Call: Tamin Falat colours as glassmorphism
+   Tokens from the redesigned taminfalat.com (chrome.css). Surfaces are frosted
+   glass over a fixed, soft blue-and-orange backdrop. Blue is for actions,
+   orange (the complementary colour) marks whatever is selected: the chosen
+   option, the active tab, the active menu item. Light only (darkMode(false)).
    ========================================================================== */
 
 :root {
     --tc-blue-50: #f3f6fa;
     --tc-blue-70: #e8ecf4;
     --tc-blue-100: #d0d9ea;
-    --tc-blue-200: #738dbf;
     --tc-blue-400: #164194;
     --tc-blue-600: #123476;
     --tc-blue-800: #091a3b;
     --tc-orange-400: #f18815;
-    --tc-orange-70: #fef3e8;
-    --tc-radius: 16px;
-    --tc-shadow: 0 1px 2px rgba(9, 26, 59, 0.04), 0 4px 16px rgba(9, 26, 59, 0.04);
+    --tc-orange-600: #c16d11;
+    --tc-muted: #5f6f8f;
+
+    --tc-glass: rgba(255, 255, 255, 0.58);
+    --tc-glass-strong: rgba(255, 255, 255, 0.82);
+    --tc-glass-edge: rgba(255, 255, 255, 0.75);
+    --tc-glass-blur: blur(18px) saturate(160%);
+    --tc-glass-shadow: 0 8px 32px rgba(22, 65, 148, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --tc-radius: 20px;
 }
 
-/* --- page ----------------------------------------------------------------- */
+/* --- backdrop ---------------------------------------------------------------- */
 
 .fi-body {
-    background-color: var(--tc-blue-50);
+    min-height: 100dvh;
+    background-color: #eaf0f9;
     color: var(--tc-blue-800);
+}
+
+/* fixed light blobs for the glass to blur; behind everything, never scrolls */
+.fi-body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(38rem 38rem at 92% 8%, rgba(22, 65, 148, 0.28), transparent 70%),
+        radial-gradient(34rem 34rem at 6% 94%, rgba(241, 136, 21, 0.22), transparent 70%),
+        radial-gradient(40rem 30rem at 45% 55%, rgba(115, 141, 191, 0.18), transparent 70%),
+        linear-gradient(160deg, #f3f6fa 0%, #e6edf8 100%);
+}
+
+.fi-layout,
+.fi-main-ctn,
+.fi-main {
+    background: transparent !important;
 }
 
 .fi-header-heading {
@@ -38,10 +65,49 @@
 }
 
 .fi-header-subheading {
-    color: #6b7a99;
+    color: var(--tc-muted);
 }
 
-/* --- brand ---------------------------------------------------------------- */
+/* --- the glass surface ---------------------------------------------------------- */
+
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-tabs,
+.fi-sc-tabs,
+.fi-fo-tabs {
+    background: var(--tc-glass) !important;
+    -webkit-backdrop-filter: var(--tc-glass-blur);
+    backdrop-filter: var(--tc-glass-blur);
+    border: 1px solid var(--tc-glass-edge);
+    border-radius: var(--tc-radius) !important;
+    box-shadow: var(--tc-glass-shadow) !important;
+    --tw-ring-color: transparent !important;
+}
+
+/* glass inside glass would double the blur: inner parts stay clear */
+.fi-ta-ctn .fi-section,
+.fi-section .fi-section,
+.fi-wi-stats-overview .fi-section {
+    background: transparent !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 0;
+    box-shadow: none !important;
+}
+
+.fi-section-header,
+.fi-ta-header {
+    border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.fi-section-header-heading,
+.fi-ta-header-heading {
+    color: var(--tc-blue-800);
+    font-weight: 700;
+}
+
+/* --- brand ---------------------------------------------------------------------- */
 
 .tc-brand {
     display: inline-flex;
@@ -54,9 +120,9 @@
     place-items: center;
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 11px;
     background-color: #fff;
-    box-shadow: 0 1px 2px rgba(9, 26, 59, 0.12);
+    box-shadow: 0 2px 8px rgba(4, 13, 30, 0.25);
 }
 
 .tc-brand__mark svg {
@@ -71,12 +137,14 @@
     white-space: nowrap;
 }
 
-/* --- top bar: the navy brand bar -------------------------------------------- */
+/* --- top bar: navy glass ------------------------------------------------------------ */
 
 .fi-topbar {
-    background: linear-gradient(90deg, var(--tc-blue-800), #0f2a5c) !important;
-    border-bottom: 3px solid var(--tc-orange-400) !important;
-    box-shadow: none !important;
+    background: rgba(9, 26, 59, 0.94) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    border-bottom: 2px solid var(--tc-orange-400) !important;
+    box-shadow: 0 6px 24px rgba(9, 26, 59, 0.18) !important;
 }
 
 .fi-topbar .tc-brand__text {
@@ -89,31 +157,42 @@
 }
 
 .fi-topbar .fi-icon-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.12);
 }
 
 .fi-topbar .fi-global-search-field .fi-input-wrp {
-    background-color: rgba(255, 255, 255, 0.1);
-    --tw-ring-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    --tw-ring-color: transparent !important;
 }
 
 .fi-topbar .fi-global-search-field .fi-input,
 .fi-topbar .fi-global-search-field .fi-input::placeholder,
 .fi-topbar .fi-global-search-field .fi-icon {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.8);
 }
 
-/* --- sidebar --------------------------------------------------------------- */
+/* --- sidebar: white glass --------------------------------------------------------------- */
 
 @media (min-width: 1024px) {
     .fi-sidebar {
-        background-color: #fff !important;
-        border-inline-end: 1px solid var(--tc-blue-70);
+        background: rgba(255, 255, 255, 0.42) !important;
+        -webkit-backdrop-filter: var(--tc-glass-blur);
+        backdrop-filter: var(--tc-glass-blur);
+        border-inline-end: 1px solid var(--tc-glass-edge);
+    }
+}
+
+@media (max-width: 1023.98px) {
+    .fi-sidebar.fi-sidebar-open {
+        background: var(--tc-glass-strong) !important;
+        -webkit-backdrop-filter: var(--tc-glass-blur);
+        backdrop-filter: var(--tc-glass-blur);
     }
 }
 
 .fi-sidebar-group-label {
-    color: #8a96b0;
+    color: var(--tc-muted);
     font-size: 12px;
     font-weight: 700;
 }
@@ -129,16 +208,17 @@
 }
 
 .fi-sidebar-item-btn > .fi-icon {
-    color: #8a96b0;
+    color: var(--tc-muted);
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
-    background-color: var(--tc-blue-50);
+    background-color: rgba(255, 255, 255, 0.6);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
     position: relative;
-    background-color: var(--tc-blue-70);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 14px rgba(22, 65, 148, 0.1);
 }
 
 /* orange marker on the reading edge of the active item */
@@ -158,33 +238,8 @@
     font-weight: 700;
 }
 
-/* --- cards: sections, stats, charts, tables ---------------------------------- */
+/* --- stat tiles ---------------------------------------------------------------------------- */
 
-.fi-section,
-.fi-wi-stats-overview-stat,
-.fi-wi-chart .fi-section,
-.fi-ta-ctn,
-.fi-fo-tabs,
-.fi-sc-tabs {
-    border-radius: var(--tc-radius) !important;
-    box-shadow: var(--tc-shadow) !important;
-    --tw-ring-color: var(--tc-blue-70) !important;
-}
-
-.fi-section-header-heading,
-.fi-ta-header-heading {
-    color: var(--tc-blue-800);
-    font-weight: 700;
-}
-
-/* the stats widget wraps its row of tiles in a section: that wrapper stays invisible */
-.fi-wi-stats-overview .fi-section {
-    background: transparent !important;
-    box-shadow: none !important;
-    --tw-ring-color: transparent !important;
-}
-
-/* stat tiles: a clear number, a quiet label, a blue edge */
 .fi-wi-stats-overview-stat {
     position: relative;
     overflow: hidden;
@@ -193,14 +248,15 @@
 .fi-wi-stats-overview-stat::before {
     content: '';
     position: absolute;
-    inset-block: 0;
+    inset-block: 18px;
     inset-inline-start: 0;
     width: 4px;
-    background-color: var(--tc-blue-400);
+    border-radius: 4px;
+    background: linear-gradient(180deg, var(--tc-blue-400), var(--tc-orange-400));
 }
 
 .fi-wi-stats-overview-stat-label {
-    color: #6b7a99;
+    color: var(--tc-muted);
     font-weight: 600;
 }
 
@@ -214,9 +270,10 @@
     font-weight: 700;
 }
 
-/* tables */
+/* --- tables -------------------------------------------------------------------------------------- */
+
 .fi-ta-header-cell {
-    background-color: var(--tc-blue-50);
+    background: rgba(255, 255, 255, 0.45);
 }
 
 .fi-ta-header-cell-label {
@@ -224,24 +281,40 @@
     font-weight: 700;
 }
 
-.fi-ta-row:hover {
-    background-color: #fafbfd;
+.fi-ta-row {
+    background: transparent;
 }
 
-/* --- tabs: pills --------------------------------------------------------------- */
+.fi-ta-row:hover {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.fi-ta-table > tbody,
+.fi-ta-row,
+.fi-ta-header-toolbar,
+.fi-ta-filters,
+.fi-pagination {
+    border-color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* --- tabs: selected is orange --------------------------------------------------------------- */
 
 .fi-tabs {
-    border-radius: 14px !important;
-    --tw-ring-color: var(--tc-blue-70) !important;
-    box-shadow: var(--tc-shadow) !important;
+    border-radius: 16px !important;
+    padding: 4px;
 }
 
 .fi-tabs-item {
-    border-radius: 10px;
+    border-radius: 12px;
+}
+
+.fi-tabs-item:not(.fi-active):hover {
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .fi-tabs-item.fi-active {
-    background-color: var(--tc-blue-400) !important;
+    background: linear-gradient(135deg, var(--tc-orange-400), #f5a04a) !important;
+    box-shadow: 0 4px 14px rgba(241, 136, 21, 0.35);
 }
 
 .fi-tabs-item.fi-active .fi-tabs-item-label,
@@ -249,45 +322,140 @@
     color: #fff !important;
 }
 
-/* --- buttons ------------------------------------------------------------------- */
+.fi-tabs-item.fi-active .fi-badge {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: var(--tc-orange-600) !important;
+}
+
+/* --- action buttons: blue (not the option buttons, which are labels) ---------------------------- */
 
 .fi-btn {
-    border-radius: 10px;
+    border-radius: 12px;
     font-weight: 700;
 }
 
-.fi-btn.fi-color-primary:not(.fi-outlined) {
-    background-color: var(--tc-blue-400);
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label) {
+    background: linear-gradient(135deg, var(--tc-blue-400), #2a5bc0);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(22, 65, 148, 0.28);
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label):hover {
+    background: var(--tc-blue-600);
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label) .fi-icon,
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label) .fi-btn-label {
     color: #fff;
 }
 
-.fi-btn.fi-color-primary:not(.fi-outlined) .fi-icon,
-.fi-btn.fi-color-primary:not(.fi-outlined) .fi-btn-label {
-    color: #fff;
+/* grey buttons (cancel, secondary) as light glass */
+.fi-btn.fi-color-gray:not(label) {
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
 }
 
-.fi-btn.fi-color-primary:not(.fi-outlined):hover {
-    background-color: var(--tc-blue-600);
+/* --- option buttons (ToggleButtons): white until chosen, orange when chosen ------------------- */
+
+.fi-fo-toggle-buttons .fi-btn {
+    background: rgba(255, 255, 255, 0.75) !important;
+    color: var(--tc-blue-800) !important;
+    border: 1px solid var(--tc-blue-100);
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* --- inputs -------------------------------------------------------------------- */
+.fi-fo-toggle-buttons .fi-btn .fi-icon {
+    color: var(--tc-muted) !important;
+}
+
+.fi-fo-toggle-buttons .fi-btn:hover {
+    background: #fff !important;
+    border-color: var(--tc-blue-400);
+}
+
+.fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn {
+    background: linear-gradient(135deg, var(--tc-orange-400), #f5a04a) !important;
+    color: #fff !important;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(241, 136, 21, 0.35) !important;
+}
+
+.fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn .fi-icon {
+    color: #fff !important;
+}
+
+/* answered / not, bought / not, and satisfaction keep their own meaning colours when chosen */
+.fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-success {
+    background: linear-gradient(135deg, #16a34a, #22c55e) !important;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3) !important;
+}
+
+.fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3) !important;
+}
+
+.fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-gray {
+    background: linear-gradient(135deg, #64748b, #94a3b8) !important;
+    box-shadow: 0 4px 14px rgba(100, 116, 139, 0.3) !important;
+}
+
+.fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:focus-visible + .fi-btn {
+    outline: 2px solid var(--tc-blue-400);
+    outline-offset: 2px;
+}
+
+/* --- inputs ---------------------------------------------------------------------------------------- */
 
 .fi-input-wrp {
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.72) !important;
+    border-radius: 12px;
 }
 
-/* --- login page ----------------------------------------------------------------- */
+/* --- pop-ups: modals and dropdowns ------------------------------------------------------------------- */
+
+.fi-modal-close-overlay {
+    background: rgba(9, 26, 59, 0.35) !important;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.fi-modal-window,
+.fi-dropdown-panel {
+    background: var(--tc-glass-strong) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+    border: 1px solid var(--tc-glass-edge);
+    box-shadow: 0 24px 60px rgba(9, 26, 59, 0.22) !important;
+    --tw-ring-color: transparent !important;
+}
+
+.fi-modal-window {
+    border-radius: 24px !important;
+}
+
+.fi-dropdown-panel {
+    border-radius: 16px !important;
+}
+
+/* --- login page ------------------------------------------------------------------------------------------ */
 
 .fi-simple-layout {
     background:
-        radial-gradient(circle at 85% 85%, rgba(22, 65, 148, 0.6), transparent 50%),
+        radial-gradient(34rem 34rem at 88% 12%, rgba(42, 91, 192, 0.55), transparent 70%),
         linear-gradient(160deg, var(--tc-blue-800), #0f2a5c);
 }
 
 .fi-simple-main {
-    border-top: 4px solid var(--tc-orange-400);
-    border-radius: 20px !important;
-    box-shadow: 0 20px 60px rgba(4, 13, 30, 0.35) !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 24px !important;
+    box-shadow: 0 24px 70px rgba(4, 13, 30, 0.4) !important;
     --tw-ring-color: transparent !important;
 }
 
@@ -295,7 +463,7 @@
     width: 48px;
     height: 48px;
     border-radius: 14px;
-    box-shadow: 0 0 0 1px var(--tc-blue-70);
+    box-shadow: 0 0 0 1px var(--tc-blue-70), 0 4px 14px rgba(22, 65, 148, 0.15);
 }
 
 .fi-simple-header .tc-brand__mark svg {
@@ -309,4 +477,18 @@
 
 .fi-simple-header-heading {
     color: var(--tc-blue-800);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .fi-section,
+    .fi-ta-ctn,
+    .fi-wi-stats-overview-stat,
+    .fi-tabs,
+    .fi-sidebar,
+    .fi-modal-window,
+    .fi-dropdown-panel {
+        background: #fff !important;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
 }

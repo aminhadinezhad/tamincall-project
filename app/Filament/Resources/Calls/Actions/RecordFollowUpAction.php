@@ -47,7 +47,7 @@ class RecordFollowUpAction
     public static function make(): Action
     {
         return Action::make('recordFollowUp')
-            ->label('ثبت نتیجه تماس')
+            ->label('ثبت نتیجه')
             ->icon(Heroicon::OutlinedPhoneArrowUpRight)
             ->color('primary')
             ->visible(fn (Call $record): bool => $record->status === CallStatus::AwaitingFollowUp)

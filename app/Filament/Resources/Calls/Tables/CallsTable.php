@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Calls\Tables;
 use App\Enums\CallStatus;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Models\Call;
+use App\Models\Customer;
 use App\Support\Persian;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -38,16 +39,23 @@ class CallsTable
                     ->formatStateUsing(fn ($state): string => Persian::date($state))
                     ->sortable(),
 
+                // the number sits under the name, so the row fits without a sideways scroll
                 TextColumn::make('customer.name')
                     ->label('مشتری')
-                    ->description(fn (Call $record): ?string => $record->customer->company)
-                    ->searchable(),
+                    ->description(fn (Call $record): string => collect([Persian::digits($record->customer->phone), $record->customer->company])->filter()->join(' · '))
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereHas(
+                        'customer',
+                        fn (Builder $customer) => $customer
+                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('company', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', '%'.Customer::normalizePhone($search).'%'),
+                    )),
 
                 TextColumn::make('customer.phone')
                     ->label('شماره')
                     ->formatStateUsing(fn ($state): string => Persian::digits($state))
                     ->copyable()
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('salesAgent.name')
                     ->label('کارشناس فروش')
@@ -55,7 +63,7 @@ class CallsTable
 
                 TextColumn::make('request')
                     ->label('درخواست')
-                    ->limit(40)
+                    ->limit(20)
                     ->tooltip(fn (Call $record): string => $record->request)
                     ->toggleable(),
 
