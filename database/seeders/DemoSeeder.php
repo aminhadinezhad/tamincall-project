@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\AcquisitionSource;
 use App\Enums\CallStatus;
+use App\Enums\CustomerType;
 use App\Enums\NoPurchaseReason;
 use App\Enums\UserRole;
 use App\Models\Call;
@@ -37,18 +39,39 @@ class DemoSeeder extends Seeder
 
         $firstNames = ['علی', 'مریم', 'حسین', 'زهرا', 'محمد', 'فاطمه', 'رضا', 'سارا', 'مهدی', 'نرگس', 'امیر', 'لیلا'];
         $lastNames = ['محمدی', 'حسینی', 'رحیمی', 'موسوی', 'کاظمی', 'جعفری', 'صادقی', 'قاسمی', 'باقری', 'اکبری'];
-        $companies = [null, null, 'شرکت پارس صنعت', 'بیمارستان آتیه', 'دفتر حقوقی نیک', 'مدرسه فرهنگ', 'رستوران گلستان', 'شرکت آریا تجارت'];
+        $companies = [null, 'شرکت پارس صنعت', null, 'بیمارستان آتیه', null, 'رستوران گلستان', null, null];
         $requests = [
             'استعلام قیمت دستمال کاغذی ۵۰ کارتن', 'خرید لیوان کاغذی چاپ دار', 'کاغذ A4 برای دفتر', 'مواد شوینده ی ماهانه ی شرکت',
             'اقلام پذیرایی برای همایش', 'چای و قهوه ی سازمانی', 'لوازم التحریر مدرسه', 'کیسه زباله ی صنعتی',
         ];
 
+        // weighted, so the "how they found us" chart has a realistic shape
+        $sources = [
+            AcquisitionSource::Website->value => 30, AcquisitionSource::OnlineAds->value => 20, AcquisitionSource::BaleBot->value => 10,
+            AcquisitionSource::Outdoor->value => 8, AcquisitionSource::AgentMarketing->value => 17, AcquisitionSource::Referral->value => 15,
+        ];
+        $pickSource = function () use ($sources): string {
+            $roll = mt_rand(1, array_sum($sources));
+            foreach ($sources as $source => $weight) {
+                if (($roll -= $weight) <= 0) {
+                    return $source;
+                }
+            }
+
+            return AcquisitionSource::Website->value;
+        };
+
         mt_srand(1405);
 
         for ($i = 0; $i < 60; $i++) {
+            $company = $companies[$i % 8];
             $customer = Customer::firstOrCreate(
                 ['phone' => '0912'.str_pad((string) (1000000 + $i * 7919 % 9000000), 7, '0', STR_PAD_LEFT)],
-                ['name' => $firstNames[$i % 12].' '.$lastNames[$i % 10], 'company' => $companies[$i % 8]],
+                [
+                    'name' => $firstNames[$i % 12].' '.$lastNames[$i % 10],
+                    'type' => $company ? CustomerType::Legal : CustomerType::Individual,
+                    'company' => $company,
+                ],
             );
 
             $receivedAt = Carbon::now()->subDays(mt_rand(0, 59))->setTime(mt_rand(8, 17), mt_rand(0, 59));
@@ -59,6 +82,7 @@ class DemoSeeder extends Seeder
                 'sales_agent_id' => $agent->id,
                 'received_by' => $secretary->id,
                 'request' => $requests[mt_rand(0, 7)],
+                'source' => $pickSource(),
                 'follow_up_on' => Call::workingDayAfter(1, $receivedAt->copy()->startOfDay()),
             ]);
             $call->forceFill(['created_at' => $receivedAt, 'updated_at' => $receivedAt])->saveQuietly();

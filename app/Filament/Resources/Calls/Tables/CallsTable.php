@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Calls\Tables;
 
+use App\Enums\AcquisitionSource;
 use App\Enums\CallStatus;
+use App\Enums\CustomerType;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Models\Call;
 use App\Models\Customer;
@@ -81,10 +83,30 @@ class CallsTable
                     ->label('خرید کرد؟')
                     ->boolean()
                     ->placeholder('—'),
+
+                // switched on from the columns menu when needed; off by default so a row fits a laptop screen
+                TextColumn::make('source')
+                    ->label('نحوه آشنایی')
+                    ->badge()
+                    ->color('gray')
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('customer.type')
+                    ->label('نوع مشتری')
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('notes')
+                    ->label('توضیحات')
+                    ->limit(30)
+                    ->tooltip(fn (Call $record): ?string => $record->notes)
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('follow_up_on')
             ->filtersLayout(FiltersLayout::AboveContent)
-            ->filtersFormColumns(3)
+            ->filtersFormColumns(5)
             ->filters([
                 SelectFilter::make('sales_agent_id')
                     ->label('کارشناس فروش')
@@ -94,6 +116,18 @@ class CallsTable
                 SelectFilter::make('status')
                     ->label('وضعیت')
                     ->options(CallStatus::class),
+
+                SelectFilter::make('source')
+                    ->label('نحوه آشنایی')
+                    ->options(AcquisitionSource::class),
+
+                SelectFilter::make('customer_type')
+                    ->label('نوع مشتری')
+                    ->options(CustomerType::class)
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['value'] ?? null,
+                        fn (Builder $query, string $type): Builder => $query->whereHas('customer', fn (Builder $c) => $c->where('type', $type)),
+                    )),
 
                 Filter::make('period')
                     ->schema([

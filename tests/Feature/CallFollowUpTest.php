@@ -2,10 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Enums\AcquisitionSource;
 use App\Enums\CallStatus;
+use App\Enums\CustomerType;
 use App\Enums\NoPurchaseReason;
 use App\Enums\UserRole;
+use App\Filament\Resources\Calls\Pages\CreateCall;
 use App\Filament\Resources\Calls\Pages\ListCalls;
+use App\Filament\Resources\Customers\Pages\CreateCustomer;
+use App\Filament\Widgets\AcquisitionSourceChart;
 use App\Models\Call;
 use App\Models\Customer;
 use App\Models\SalesAgent;
@@ -141,6 +146,69 @@ class CallFollowUpTest extends TestCase
         $this->assertSame(CallStatus::Done, $call->status);
         $this->assertTrue($call->result->purchased);
         $this->assertSame(auth()->id(), $call->result->user_id);
+    }
+
+    public function test_the_new_call_form_saves_source_and_notes_and_requires_the_source(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+        $customer = Customer::create(['name' => 'زهرا موسوی', 'phone' => '09125550000', 'type' => CustomerType::Individual]);
+        $agent = SalesAgent::create(['name' => 'خانم کریمی']);
+
+        Livewire::test(CreateCall::class)
+            ->fillForm(['customer_id' => $customer->id, 'sales_agent_id' => $agent->id, 'request' => 'کاغذ A4', 'follow_up_in' => 1])
+            ->call('create')
+            ->assertHasFormErrors(['source' => 'required']);
+
+        Livewire::test(CreateCall::class)
+            ->fillForm([
+                'customer_id' => $customer->id,
+                'sales_agent_id' => $agent->id,
+                'request' => 'کاغذ A4',
+                'source' => AcquisitionSource::Referral->value,
+                'notes' => 'از طرف آقای رحیمی',
+                'follow_up_in' => 1,
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $call = Call::sole();
+        $this->assertSame(AcquisitionSource::Referral, $call->source);
+        $this->assertSame('از طرف آقای رحیمی', $call->notes);
+    }
+
+    public function test_a_legal_customer_needs_a_company_name(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+
+        Livewire::test(CreateCustomer::class)
+            ->fillForm(['name' => 'علی رضایی', 'phone' => '09127770000', 'type' => CustomerType::Legal->value])
+            ->call('create')
+            ->assertHasFormErrors(['company' => 'required']);
+
+        Livewire::test(CreateCustomer::class)
+            ->fillForm(['name' => 'علی رضایی', 'phone' => '۰۹۱۲۷۷۷۰۰۰۰', 'type' => CustomerType::Legal->value, 'company' => 'شرکت آریا'])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(CustomerType::Legal, Customer::where('phone', '09127770000')->sole()->type);
+    }
+
+    public function test_the_source_and_customer_type_charts_count_purchases_correctly(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'm@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
+
+        // three referrals: two bought; three from the website: one bought
+        foreach ([['referral', true], ['referral', true], ['referral', false], ['website', true], ['website', false], ['website', false]] as [$source, $bought]) {
+            $call = $this->makeCall(['source' => $source]);
+            $call->recordFollowUp(['answered' => true, 'purchased' => $bought, 'no_purchase_reason' => $bought ? null : 'price', 'agent_satisfaction' => 4, 'overall_satisfaction' => 4]);
+        }
+
+        Livewire::test(AcquisitionSourceChart::class)
+            ->assertSee('بیشترین نرخ خرید: معرف (۶۷٪ از مشتریان پیگیری شده)')
+            ->assertSee('سایت · ۵۰٪', false);
     }
 
     public function test_secretaries_cannot_open_manager_pages(): void

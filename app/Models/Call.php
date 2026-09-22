@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AcquisitionSource;
 use App\Enums\CallStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
-#[Fillable(['customer_id', 'sales_agent_id', 'received_by', 'request', 'status', 'follow_up_on', 'unanswered_attempts'])]
+#[Fillable(['customer_id', 'sales_agent_id', 'received_by', 'request', 'source', 'notes', 'status', 'follow_up_on', 'unanswered_attempts'])]
 class Call extends Model
 {
     use HasFactory;
@@ -30,6 +31,7 @@ class Call extends Model
     {
         return [
             'status' => CallStatus::class,
+            'source' => AcquisitionSource::class,
             'follow_up_on' => 'date',
             'unanswered_attempts' => 'integer',
         ];

@@ -2,16 +2,24 @@
 
 namespace App\Models;
 
+use App\Enums\CustomerType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'phone', 'company', 'notes'])]
+#[Fillable(['name', 'phone', 'type', 'company', 'notes'])]
 class Customer extends Model
 {
     use HasFactory;
+
+    protected function casts(): array
+    {
+        return [
+            'type' => CustomerType::class,
+        ];
+    }
 
     public function calls(): HasMany
     {

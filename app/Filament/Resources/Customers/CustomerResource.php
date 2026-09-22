@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers;
 
+use App\Enums\CustomerType;
 use App\Filament\Resources\Calls\Schemas\CallForm;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
 use App\Filament\Resources\Customers\Pages\EditCustomer;
@@ -49,6 +50,7 @@ class CustomerResource extends Resource
             ->columns([
                 TextColumn::make('name')->label('نام')->searchable()->sortable(),
                 TextColumn::make('phone')->label('شماره')->formatStateUsing(fn ($state): string => Persian::digits($state))->copyable()->searchable(),
+                TextColumn::make('type')->label('نوع مشتری')->badge()->color(fn ($state): string => $state === CustomerType::Legal ? 'info' : 'gray')->placeholder('—'),
                 TextColumn::make('company')->label('شرکت / سازمان')->placeholder('—')->searchable(),
                 TextColumn::make('calls_count')->label('تعداد تماس')->counts('calls')->formatStateUsing(fn ($state): string => Persian::digits($state))->sortable(),
                 TextColumn::make('created_at')->label('اولین تماس')->formatStateUsing(fn ($state): string => Persian::date($state))->sortable()->toggleable(),

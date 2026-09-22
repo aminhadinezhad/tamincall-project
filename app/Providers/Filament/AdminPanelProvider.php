@@ -12,6 +12,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -36,6 +37,11 @@ class AdminPanelProvider extends PanelProvider
             ->font('Kalameh', url: asset('css/fonts.css'), provider: LocalFontProvider::class)
             // the Tamin Falat look (resources/css/filament/admin/theme.css) is designed for light only
             ->viteTheme('resources/css/filament/admin/theme.css')
+            // the Kalameh weights the theme uses start downloading with the page, not after the CSS,
+            // so text appears in Kalameh from the first paint instead of switching fonts a moment later
+            ->renderHook(PanelsRenderHook::HEAD_START, fn (): string => collect(['Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold'])
+                ->map(fn (string $weight): string => '<link rel="preload" href="'.e(asset("fonts/kalameh/KalamehWeb(FaNum)-{$weight}.woff2")).'" as="font" type="font/woff2" crossorigin>')
+                ->implode(''))
             ->darkMode(false)
             ->colors([
                 'primary' => Color::hex('#164194'),

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Calls\Schemas;
 
+use App\Enums\AcquisitionSource;
+use App\Enums\CustomerType;
 use App\Models\Call;
 use App\Models\Customer;
 use App\Support\Persian;
@@ -11,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class CallForm
@@ -55,8 +58,20 @@ class CallForm
                             ->required()
                             ->columnSpanFull(),
 
+                        // required, so the "how customers find us" report has no gaps
+                        Select::make('source')
+                            ->label('نحوه آشنایی')
+                            ->options(AcquisitionSource::class)
+                            ->placeholder('انتخاب کنید')
+                            ->required(),
+
+                        Textarea::make('notes')
+                            ->label('توضیحات')
+                            ->placeholder('هر نکته ی دیگری درباره ی این تماس (اختیاری)')
+                            ->rows(2),
+
                         ToggleButtons::make('follow_up_in')
-                            ->label(fn (string $operation): string => $operation === 'create' ? 'پیگیری با مشتری' : 'تغییر زمان پیگیری')
+                            ->label(fn (string $operation): string => $operation === 'create' ? 'پیگیری مشتری' : 'تغییر زمان پیگیری')
                             ->helperText(fn (?Call $record): ?string => $record
                                 ? 'زمان فعلی: '.Persian::dayName($record->follow_up_on).'. فقط اگر می خواهید عوض شود انتخاب کنید.'
                                 : 'در این روز، این مشتری در فهرست «پیگیری امروز» قرار می گیرد.')
@@ -85,7 +100,8 @@ class CallForm
 
             TextInput::make('phone')
                 ->label('شماره موبایل')
-                ->tel()
+                // not ->tel(): its check rejects Persian digits before they are converted below
+                ->inputMode('tel')
                 ->required()
                 ->placeholder('09123456789')
                 ->extraInputAttributes(['dir' => 'ltr'])
@@ -110,8 +126,17 @@ class CallForm
                     },
                 ]),
 
+            ToggleButtons::make('type')
+                ->label('نوع مشتری')
+                ->options(CustomerType::class)
+                ->inline()
+                ->required()
+                ->live(),
+
+            // a legal customer is a company or organisation, so its name is needed
             TextInput::make('company')
                 ->label('شرکت / سازمان')
+                ->required(fn (Get $get): bool => $get('type') === CustomerType::Legal || $get('type') === CustomerType::Legal->value)
                 ->maxLength(255),
 
             Textarea::make('notes')
