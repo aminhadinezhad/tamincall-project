@@ -390,9 +390,24 @@
     color: var(--tc-muted) !important;
 }
 
+/* hover only lifts the white; no border colour appears */
 .fi-fo-toggle-buttons .fi-btn:hover {
     background: #fff !important;
-    border-color: var(--tc-blue-400);
+}
+
+/* the paired yes/no questions (grouped buttons): no frame and no borders, two separate
+   pills with a small gap instead */
+.fi-fo-toggle-buttons.fi-btn-group {
+    gap: 6px;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+.fi-fo-toggle-buttons.fi-btn-group .fi-btn {
+    border: 0 !important;
+    border-radius: 12px !important;
+    margin: 0 !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn {
