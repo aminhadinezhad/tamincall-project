@@ -22,12 +22,18 @@
     --tc-orange-600: #c16d11;
     --tc-muted: #5f6f8f;
 
-    --tc-glass: rgba(255, 255, 255, 0.58);
-    --tc-glass-strong: rgba(255, 255, 255, 0.82);
-    --tc-glass-edge: rgba(255, 255, 255, 0.75);
-    --tc-glass-blur: blur(18px) saturate(160%);
-    --tc-glass-shadow: 0 8px 32px rgba(22, 65, 148, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    --tc-radius: 20px;
+    /* glass: a diagonal sheen (brighter top-left) rather than a flat fill, a strong blur, a bright
+       top edge and a faint outer outline so cards stay distinct on light parts of the backdrop */
+    --tc-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.34) 100%);
+    --tc-glass-strong: rgba(255, 255, 255, 0.78);
+    --tc-glass-edge: rgba(255, 255, 255, 0.7);
+    --tc-glass-blur: blur(26px) saturate(180%);
+    --tc-glass-shadow:
+        0 10px 40px rgba(22, 65, 148, 0.12),
+        0 0 0 1px rgba(22, 65, 148, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+    --tc-radius: 22px;
 }
 
 /* --- backdrop ---------------------------------------------------------------- */
@@ -45,11 +51,14 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
+    /* more colour than before, so the stronger glass has something to blur; still pale overall */
     background:
-        radial-gradient(38rem 38rem at 92% 8%, rgba(22, 65, 148, 0.28), transparent 70%),
-        radial-gradient(34rem 34rem at 6% 94%, rgba(241, 136, 21, 0.22), transparent 70%),
-        radial-gradient(40rem 30rem at 45% 55%, rgba(115, 141, 191, 0.18), transparent 70%),
-        linear-gradient(160deg, #f3f6fa 0%, #e6edf8 100%);
+        radial-gradient(40rem 40rem at 95% 5%, rgba(22, 65, 148, 0.42), transparent 68%),
+        radial-gradient(30rem 30rem at 55% 30%, rgba(86, 152, 231, 0.26), transparent 70%),
+        radial-gradient(36rem 36rem at 4% 96%, rgba(241, 136, 21, 0.32), transparent 68%),
+        radial-gradient(28rem 28rem at 30% 70%, rgba(115, 141, 191, 0.28), transparent 70%),
+        radial-gradient(26rem 26rem at 85% 85%, rgba(241, 136, 21, 0.16), transparent 70%),
+        linear-gradient(160deg, #eef3fb 0%, #e2eaf7 100%);
 }
 
 .fi-layout,
@@ -74,7 +83,8 @@
 .fi-ta-ctn,
 .fi-wi-stats-overview-stat,
 .fi-tabs {
-    background: var(--tc-glass) !important;
+    background: transparent !important;
+    background-image: var(--tc-glass) !important;
     -webkit-backdrop-filter: var(--tc-glass-blur);
     backdrop-filter: var(--tc-glass-blur);
     border: 1px solid var(--tc-glass-edge);
@@ -149,11 +159,11 @@
 /* --- top bar: navy glass ------------------------------------------------------------ */
 
 .fi-topbar {
-    background: rgba(9, 26, 59, 0.94) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-    backdrop-filter: blur(16px) saturate(160%);
+    background: linear-gradient(90deg, rgba(9, 26, 59, 0.93), rgba(18, 52, 118, 0.88)) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
     border-bottom: 2px solid var(--tc-orange-400) !important;
-    box-shadow: 0 6px 24px rgba(9, 26, 59, 0.18) !important;
+    box-shadow: 0 8px 28px rgba(9, 26, 59, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 .fi-topbar .tc-brand__text {
@@ -185,7 +195,7 @@
 
 @media (min-width: 1024px) {
     .fi-sidebar {
-        background: rgba(255, 255, 255, 0.42) !important;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.26)) !important;
         -webkit-backdrop-filter: var(--tc-glass-blur);
         backdrop-filter: var(--tc-glass-blur);
         border-inline-end: 1px solid var(--tc-glass-edge);
@@ -444,7 +454,7 @@
 /* --- inputs ---------------------------------------------------------------------------------------- */
 
 .fi-input-wrp {
-    background: rgba(255, 255, 255, 0.72) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
     border-radius: 12px;
 }
 
