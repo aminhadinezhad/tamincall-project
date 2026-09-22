@@ -73,15 +73,24 @@
 .fi-section,
 .fi-ta-ctn,
 .fi-wi-stats-overview-stat,
-.fi-tabs,
-.fi-sc-tabs,
-.fi-fo-tabs {
+.fi-tabs {
     background: var(--tc-glass) !important;
     -webkit-backdrop-filter: var(--tc-glass-blur);
     backdrop-filter: var(--tc-glass-blur);
     border: 1px solid var(--tc-glass-edge);
     border-radius: var(--tc-radius) !important;
     box-shadow: var(--tc-glass-shadow) !important;
+    --tw-ring-color: transparent !important;
+}
+
+/* the container around a tab bar stays invisible: the tabs themselves are the only box */
+.fi-sc-tabs,
+.fi-fo-tabs {
+    background: transparent !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 0 !important;
+    box-shadow: none !important;
     --tw-ring-color: transparent !important;
 }
 
@@ -211,13 +220,16 @@
     color: var(--tc-muted);
 }
 
-.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+.fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover {
     background-color: rgba(255, 255, 255, 0.6);
 }
 
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+/* the page you are on: nothing changes under the pointer */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn:hover,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn:focus-visible {
     position: relative;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.85) !important;
     box-shadow: 0 4px 14px rgba(22, 65, 148, 0.1);
 }
 
@@ -334,14 +346,21 @@
     font-weight: 700;
 }
 
+/* a solid blue base under the gradient in every state, so hovering never shows
+   Filament's own background for a frame */
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label) {
-    background: linear-gradient(135deg, var(--tc-blue-400), #2a5bc0);
+    background-color: var(--tc-blue-400) !important;
+    background-image: linear-gradient(135deg, var(--tc-blue-400), #2a5bc0) !important;
     color: #fff;
     box-shadow: 0 4px 14px rgba(22, 65, 148, 0.28);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.fi-btn.fi-color-primary:not(.fi-outlined):not(label):hover {
-    background: var(--tc-blue-600);
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label):hover,
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label):focus-visible {
+    background-color: var(--tc-blue-600) !important;
+    background-image: linear-gradient(135deg, var(--tc-blue-600), #1f4aa8) !important;
+    box-shadow: 0 6px 18px rgba(22, 65, 148, 0.35);
 }
 
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label) .fi-icon,
