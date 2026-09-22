@@ -417,8 +417,15 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     border-radius: var(--tc-radius-sm);
 }
 
-.fi-tabs-item:not(.fi-active):hover {
-    background: rgba(255, 255, 255, 0.6);
+/* the other tabs do not react to the pointer: no background, no colour change */
+.fi-tabs-item:not(.fi-active):hover,
+.fi-tabs-item:not(.fi-active):focus-visible {
+    background: transparent !important;
+}
+
+.fi-tabs-item:not(.fi-active):hover .fi-tabs-item-label,
+.fi-tabs-item:not(.fi-active):focus-visible .fi-tabs-item-label {
+    color: var(--color-gray-500);
 }
 
 .fi-tabs-item.fi-active {
