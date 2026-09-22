@@ -22,13 +22,13 @@ class CallResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
 
-    protected static string|UnitEnum|null $navigationGroup = 'تماس‌ها';
+    protected static string|UnitEnum|null $navigationGroup = 'تماس ها';
 
     protected static ?string $modelLabel = 'تماس';
 
-    protected static ?string $pluralModelLabel = 'تماس‌ها';
+    protected static ?string $pluralModelLabel = 'تماس ها';
 
-    protected static ?string $navigationLabel = 'تماس‌ها و پیگیری';
+    protected static ?string $navigationLabel = 'تماس ها و پیگیری';
 
     protected static ?int $navigationSort = 1;
 
@@ -73,7 +73,7 @@ class CallResource extends Resource
 
     public static function getNavigationBadgeTooltip(): string
     {
-        return 'پیگیری‌های امروز';
+        return 'پیگیری های امروز';
     }
 
     public static function canDelete($record): bool

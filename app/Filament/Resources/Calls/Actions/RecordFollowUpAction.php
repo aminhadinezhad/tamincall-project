@@ -97,7 +97,7 @@ class RecordFollowUpAction
 
                 Textarea::make('notes')
                     ->label('توضیحات')
-                    ->placeholder('هر نکته‌ای که مشتری گفت')
+                    ->placeholder('هر نکته ای که مشتری گفت')
                     ->rows(3),
 
                 ToggleButtons::make('call_again_in')

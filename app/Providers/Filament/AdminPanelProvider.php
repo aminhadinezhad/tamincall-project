@@ -11,6 +11,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,18 +30,25 @@ class AdminPanelProvider extends PanelProvider
             ->path('')
             ->login()
             ->brandName('تامین کال')
+            ->brandLogo(fn () => view('filament.brand'))
+            ->brandLogoHeight('2.5rem')
             ->favicon(asset('ico/favicon-32x32.png'))
             ->font('Kalameh', url: asset('css/fonts.css'), provider: LocalFontProvider::class)
+            // the Tamin Falat look (resources/css/filament/admin/theme.css) is designed for light only
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->darkMode(false)
             ->colors([
                 'primary' => Color::hex('#164194'),
                 'warning' => Color::hex('#f18815'),
+                'gray' => Color::Slate,
             ])
             ->navigationGroups([
-                'تماس‌ها',
+                'تماس ها',
                 'مدیریت',
             ])
             ->sidebarCollapsibleOnDesktop()
             ->breadcrumbs(false)
+            ->maxContentWidth(Width::Full)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

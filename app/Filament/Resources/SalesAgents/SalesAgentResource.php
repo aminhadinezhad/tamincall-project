@@ -46,7 +46,7 @@ class SalesAgentResource extends Resource
             TextInput::make('phone')->label('شماره داخلی / موبایل')->maxLength(20),
             Toggle::make('is_active')
                 ->label('فعال')
-                ->helperText('کارشناس غیرفعال در فرم ارجاع دیده نمی‌شود، ولی آمار گذشته‌اش می‌ماند.')
+                ->helperText('کارشناس غیرفعال در فرم ارجاع دیده نمی شود، ولی آمار گذشته اش می ماند.')
                 ->default(true),
         ]);
     }

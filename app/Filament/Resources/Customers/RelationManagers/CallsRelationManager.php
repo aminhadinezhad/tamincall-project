@@ -18,7 +18,7 @@ class CallsRelationManager extends RelationManager
 {
     protected static string $relationship = 'calls';
 
-    protected static ?string $title = 'تماس‌های این مشتری';
+    protected static ?string $title = 'تماس های این مشتری';
 
     public function isReadOnly(): bool
     {

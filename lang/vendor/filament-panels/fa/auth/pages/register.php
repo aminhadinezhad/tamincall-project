@@ -1,0 +1,51 @@
+<?php
+
+// Generated from vendor/filament/filament/resources/lang/fa/auth/pages/register.php, with half-spaces replaced by spaces.
+
+return [
+  'title' => 'ثبت نام',
+  'heading' => 'ثبت نام',
+  'actions' => 
+  [
+    'login' => 
+    [
+      'before' => 'یا',
+      'label' => 'ورود به حساب کاربری',
+    ],
+  ],
+  'form' => 
+  [
+    'email' => 
+    [
+      'label' => 'ایمیل',
+    ],
+    'name' => 
+    [
+      'label' => 'نام',
+    ],
+    'password' => 
+    [
+      'label' => 'رمز عبور',
+      'validation_attribute' => 'رمز عبور',
+    ],
+    'password_confirmation' => 
+    [
+      'label' => 'تایید رمز عبور',
+    ],
+    'actions' => 
+    [
+      'register' => 
+      [
+        'label' => 'ثبت نام',
+      ],
+    ],
+  ],
+  'notifications' => 
+  [
+    'throttled' => 
+    [
+      'title' => 'شما بیش از حد مجاز درخواست ثبت نام داشته اید.',
+      'body' => 'لطفاً :seconds ثانیه دیگر تلاش کنید.',
+    ],
+  ],
+];

@@ -56,7 +56,7 @@ class AgentPerformanceTable extends TableWidget
             ->columns([
                 TextColumn::make('name')->label('کارشناس'),
                 TextColumn::make('referrals')->label('ارجاع')->formatStateUsing(fn ($state): string => Persian::digits($state))->sortable(),
-                TextColumn::make('reached')->label('پیگیری‌شده')->formatStateUsing(fn ($state): string => Persian::digits($state))->sortable(),
+                TextColumn::make('reached')->label('پیگیری شده')->formatStateUsing(fn ($state): string => Persian::digits($state))->sortable(),
                 TextColumn::make('purchased')->label('خرید')->formatStateUsing(fn ($state): string => Persian::digits($state))->sortable(),
                 TextColumn::make('conversion')
                     ->label('نرخ خرید')

@@ -32,12 +32,12 @@ class CallsTrendChart extends ChartWidget
 
     public function getHeading(): string
     {
-        return 'روند تماس‌ها و خرید';
+        return 'روند تماس ها و خرید';
     }
 
     public function getDescription(): string
     {
-        return 'خرید به روزِ تماس اولیه‌ی مشتری نسبت داده می‌شود.';
+        return 'خرید به روزِ تماس اولیه ی مشتری نسبت داده می شود.';
     }
 
     protected function getType(): string
@@ -70,7 +70,7 @@ class CallsTrendChart extends ChartWidget
 
         return [
             'datasets' => [
-                ['label' => 'تماس‌های ورودی', 'data' => $calls] + $line(ChartStyle::BLUE),
+                ['label' => 'تماس های ورودی', 'data' => $calls] + $line(ChartStyle::BLUE),
                 ['label' => 'منجر به خرید', 'data' => $purchases] + $line(ChartStyle::ORANGE),
             ],
             'labels' => array_column($buckets, 'label'),

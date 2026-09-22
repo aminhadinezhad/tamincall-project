@@ -1,0 +1,312 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* ==========================================================================
+   Tamin Call: the Tamin Falat look
+   Tokens from the redesigned taminfalat.com (chrome.css): navy brand bar, the
+   company blue for actions, orange for "today" and the active marker, white
+   16px cards on a pale blue page. Light only (darkMode(false) in the panel).
+   ========================================================================== */
+
+:root {
+    --tc-blue-50: #f3f6fa;
+    --tc-blue-70: #e8ecf4;
+    --tc-blue-100: #d0d9ea;
+    --tc-blue-200: #738dbf;
+    --tc-blue-400: #164194;
+    --tc-blue-600: #123476;
+    --tc-blue-800: #091a3b;
+    --tc-orange-400: #f18815;
+    --tc-orange-70: #fef3e8;
+    --tc-radius: 16px;
+    --tc-shadow: 0 1px 2px rgba(9, 26, 59, 0.04), 0 4px 16px rgba(9, 26, 59, 0.04);
+}
+
+/* --- page ----------------------------------------------------------------- */
+
+.fi-body {
+    background-color: var(--tc-blue-50);
+    color: var(--tc-blue-800);
+}
+
+.fi-header-heading {
+    color: var(--tc-blue-800);
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.fi-header-subheading {
+    color: #6b7a99;
+}
+
+/* --- brand ---------------------------------------------------------------- */
+
+.tc-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tc-brand__mark {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(9, 26, 59, 0.12);
+}
+
+.tc-brand__mark svg {
+    width: 24px;
+    height: 24px;
+}
+
+.tc-brand__text {
+    color: var(--tc-blue-800);
+    font-size: 18px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* --- top bar: the navy brand bar -------------------------------------------- */
+
+.fi-topbar {
+    background: linear-gradient(90deg, var(--tc-blue-800), #0f2a5c) !important;
+    border-bottom: 3px solid var(--tc-orange-400) !important;
+    box-shadow: none !important;
+}
+
+.fi-topbar .tc-brand__text {
+    color: #fff;
+}
+
+.fi-topbar .fi-icon-btn,
+.fi-topbar .fi-icon-btn .fi-icon {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.fi-topbar .fi-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.fi-topbar .fi-global-search-field .fi-input-wrp {
+    background-color: rgba(255, 255, 255, 0.1);
+    --tw-ring-color: rgba(255, 255, 255, 0.15);
+}
+
+.fi-topbar .fi-global-search-field .fi-input,
+.fi-topbar .fi-global-search-field .fi-input::placeholder,
+.fi-topbar .fi-global-search-field .fi-icon {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* --- sidebar --------------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+    .fi-sidebar {
+        background-color: #fff !important;
+        border-inline-end: 1px solid var(--tc-blue-70);
+    }
+}
+
+.fi-sidebar-group-label {
+    color: #8a96b0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fi-sidebar-item-btn {
+    border-radius: 12px;
+    padding-block: 10px;
+}
+
+.fi-sidebar-item-label {
+    color: var(--tc-blue-800);
+    font-weight: 500;
+}
+
+.fi-sidebar-item-btn > .fi-icon {
+    color: #8a96b0;
+}
+
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+    background-color: var(--tc-blue-50);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    position: relative;
+    background-color: var(--tc-blue-70);
+}
+
+/* orange marker on the reading edge of the active item */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
+    content: '';
+    position: absolute;
+    inset-block: 10px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 3px;
+    background-color: var(--tc-orange-400);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    color: var(--tc-blue-400);
+    font-weight: 700;
+}
+
+/* --- cards: sections, stats, charts, tables ---------------------------------- */
+
+.fi-section,
+.fi-wi-stats-overview-stat,
+.fi-wi-chart .fi-section,
+.fi-ta-ctn,
+.fi-fo-tabs,
+.fi-sc-tabs {
+    border-radius: var(--tc-radius) !important;
+    box-shadow: var(--tc-shadow) !important;
+    --tw-ring-color: var(--tc-blue-70) !important;
+}
+
+.fi-section-header-heading,
+.fi-ta-header-heading {
+    color: var(--tc-blue-800);
+    font-weight: 700;
+}
+
+/* the stats widget wraps its row of tiles in a section: that wrapper stays invisible */
+.fi-wi-stats-overview .fi-section {
+    background: transparent !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+}
+
+/* stat tiles: a clear number, a quiet label, a blue edge */
+.fi-wi-stats-overview-stat {
+    position: relative;
+    overflow: hidden;
+}
+
+.fi-wi-stats-overview-stat::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 4px;
+    background-color: var(--tc-blue-400);
+}
+
+.fi-wi-stats-overview-stat-label {
+    color: #6b7a99;
+    font-weight: 600;
+}
+
+.fi-wi-stats-overview-stat-value {
+    color: var(--tc-blue-800);
+    font-weight: 800;
+}
+
+.fi-wi-stats-overview-header-heading {
+    color: var(--tc-blue-800);
+    font-weight: 700;
+}
+
+/* tables */
+.fi-ta-header-cell {
+    background-color: var(--tc-blue-50);
+}
+
+.fi-ta-header-cell-label {
+    color: var(--tc-blue-800);
+    font-weight: 700;
+}
+
+.fi-ta-row:hover {
+    background-color: #fafbfd;
+}
+
+/* --- tabs: pills --------------------------------------------------------------- */
+
+.fi-tabs {
+    border-radius: 14px !important;
+    --tw-ring-color: var(--tc-blue-70) !important;
+    box-shadow: var(--tc-shadow) !important;
+}
+
+.fi-tabs-item {
+    border-radius: 10px;
+}
+
+.fi-tabs-item.fi-active {
+    background-color: var(--tc-blue-400) !important;
+}
+
+.fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-tabs-item.fi-active .fi-icon {
+    color: #fff !important;
+}
+
+/* --- buttons ------------------------------------------------------------------- */
+
+.fi-btn {
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined) {
+    background-color: var(--tc-blue-400);
+    color: #fff;
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined) .fi-icon,
+.fi-btn.fi-color-primary:not(.fi-outlined) .fi-btn-label {
+    color: #fff;
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined):hover {
+    background-color: var(--tc-blue-600);
+}
+
+/* --- inputs -------------------------------------------------------------------- */
+
+.fi-input-wrp {
+    border-radius: 10px;
+}
+
+/* --- login page ----------------------------------------------------------------- */
+
+.fi-simple-layout {
+    background:
+        radial-gradient(circle at 85% 85%, rgba(22, 65, 148, 0.6), transparent 50%),
+        linear-gradient(160deg, var(--tc-blue-800), #0f2a5c);
+}
+
+.fi-simple-main {
+    border-top: 4px solid var(--tc-orange-400);
+    border-radius: 20px !important;
+    box-shadow: 0 20px 60px rgba(4, 13, 30, 0.35) !important;
+    --tw-ring-color: transparent !important;
+}
+
+.fi-simple-header .tc-brand__mark {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px var(--tc-blue-70);
+}
+
+.fi-simple-header .tc-brand__mark svg {
+    width: 32px;
+    height: 32px;
+}
+
+.fi-simple-header .tc-brand__text {
+    font-size: 22px;
+}
+
+.fi-simple-header-heading {
+    color: var(--tc-blue-800);
+}

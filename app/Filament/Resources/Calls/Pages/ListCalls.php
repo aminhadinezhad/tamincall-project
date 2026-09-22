@@ -37,10 +37,10 @@ class ListCalls extends ListRecords
                 ->badge($count(fn ($q) => $q->dueBy(today())))
                 ->badgeColor('warning'),
 
-            'awaiting' => Tab::make('همه‌ی در انتظار پیگیری')
+            'awaiting' => Tab::make('در انتظار پیگیری')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', CallStatus::AwaitingFollowUp)),
 
-            'done' => Tab::make('پیگیری‌شده')
+            'done' => Tab::make('پیگیری شده')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', CallStatus::Done)),
 
             'unreachable' => Tab::make('پاسخ نداد')

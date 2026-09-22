@@ -32,20 +32,20 @@ class TodayOverview extends StatsOverviewWidget
         $receivedToday = Call::query()->whereDate('created_at', today())->count();
 
         return [
-            Stat::make('پیگیری‌های امروز', Persian::digits($dueToday))
-                ->description('مشتریانی که امروز باید با آن‌ها تماس گرفت')
+            Stat::make('پیگیری های امروز', Persian::digits($dueToday))
+                ->description('مشتریانی که امروز باید با آن ها تماس گرفت')
                 ->descriptionIcon(Heroicon::OutlinedPhoneArrowUpRight)
                 ->color('primary')
                 ->url(CallResource::getUrl('index', ['tab' => 'today'])),
 
-            Stat::make('عقب‌افتاده', Persian::digits($overdue))
-                ->description($overdue > 0 ? 'پیگیری‌هایی که از روزهای قبل مانده' : 'هیچ پیگیری عقب‌افتاده‌ای نیست')
+            Stat::make('عقب افتاده', Persian::digits($overdue))
+                ->description($overdue > 0 ? 'پیگیری هایی که از روزهای قبل مانده' : 'هیچ پیگیری عقب افتاده ای نیست')
                 ->descriptionIcon($overdue > 0 ? Heroicon::OutlinedExclamationTriangle : Heroicon::OutlinedCheckCircle)
                 ->color($overdue > 0 ? 'danger' : 'success')
                 ->url(CallResource::getUrl('index', ['tab' => 'today'])),
 
-            Stat::make('تماس‌های امروز', Persian::digits($receivedToday))
-                ->description('تماس‌های ورودی ثبت‌شده امروز')
+            Stat::make('تماس های امروز', Persian::digits($receivedToday))
+                ->description('تماس های ورودی ثبت شده امروز')
                 ->descriptionIcon(Heroicon::OutlinedPhoneArrowDownLeft)
                 ->url(CallResource::getUrl('index', ['tab' => 'all'])),
         ];

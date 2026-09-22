@@ -26,7 +26,7 @@ class Dashboard extends BaseDashboard
 
     public const DEFAULT_PERIOD = 30;
 
-    protected static ?string $title = 'داشبورد و گزارش‌ها';
+    protected static ?string $title = 'داشبورد و گزارش ها';
 
     public function filtersForm(Schema $schema): Schema
     {
@@ -38,7 +38,7 @@ class Dashboard extends BaseDashboard
         return $schema
             ->components([
                 Select::make('period')
-                    ->label('بازه‌ی زمانی')
+                    ->label('بازه ی زمانی')
                     ->options(self::PERIODS)
                     ->default(self::DEFAULT_PERIOD)
                     ->selectablePlaceholder(false),
@@ -46,7 +46,7 @@ class Dashboard extends BaseDashboard
                 Select::make('sales_agent_id')
                     ->label('کارشناس فروش')
                     ->options(fn () => SalesAgent::query()->orderBy('name')->pluck('name', 'id'))
-                    ->placeholder('همه‌ی کارشناسان'),
+                    ->placeholder('همه ی کارشناسان'),
             ]);
     }
 

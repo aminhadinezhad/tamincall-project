@@ -40,14 +40,14 @@ class ReportOverview extends StatsOverviewWidget
         $percent = fn (int $part, int $whole): string => $whole > 0 ? Persian::digits(round($part / $whole * 100)).'٪' : '—';
 
         return [
-            Stat::make('تماس‌های ورودی', Persian::digits($calls))
+            Stat::make('تماس های ورودی', Persian::digits($calls))
                 ->description('مشتریانی که به فروش ارجاع شدند'),
 
-            Stat::make('نتیجه‌ی ثبت‌شده', Persian::digits($reached))
-                ->description($calls > 0 ? $percent($reached, $calls).' از تماس‌ها پیگیری و نتیجه ثبت شد' : 'هنوز تماسی نیست'),
+            Stat::make('نتیجه ی ثبت شده', Persian::digits($reached))
+                ->description($calls > 0 ? $percent($reached, $calls).' از تماس ها پیگیری و نتیجه ثبت شد' : 'هنوز تماسی نیست'),
 
             Stat::make('نرخ خرید', $percent($purchased, $reached))
-                ->description(Persian::digits($purchased).' خرید از '.Persian::digits($reached).' مشتری پیگیری‌شده')
+                ->description(Persian::digits($purchased).' خرید از '.Persian::digits($reached).' مشتری پیگیری شده')
                 ->color('success'),
 
             Stat::make('میانگین رضایت کلی', $satisfaction ? Persian::digits(number_format($satisfaction, 1)).' از ۵' : '—')

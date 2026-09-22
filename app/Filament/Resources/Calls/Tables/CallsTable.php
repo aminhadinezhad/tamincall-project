@@ -6,6 +6,7 @@ use App\Enums\CallStatus;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Models\Call;
 use App\Support\Persian;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -100,10 +101,13 @@ class CallsTable
                             : $query->where('created_at', '>=', today()->subDays((int) $period)),
                     )),
             ])
+            // the happy call stays a visible button; the rest fold into the row's menu
             ->recordActions([
                 RecordFollowUpAction::make(),
-                EditAction::make()->label('جزئیات'),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make()->label('جزئیات'),
+                    DeleteAction::make(),
+                ]),
             ])
             ->emptyStateHeading('تماسی نیست')
             ->emptyStateDescription(null);

@@ -58,8 +58,8 @@ class CallForm
                         ToggleButtons::make('follow_up_in')
                             ->label(fn (string $operation): string => $operation === 'create' ? 'پیگیری با مشتری' : 'تغییر زمان پیگیری')
                             ->helperText(fn (?Call $record): ?string => $record
-                                ? 'زمان فعلی: '.Persian::dayName($record->follow_up_on).'. فقط اگر می‌خواهید عوض شود انتخاب کنید.'
-                                : 'در این روز، این مشتری در فهرست «پیگیری امروز» قرار می‌گیرد.')
+                                ? 'زمان فعلی: '.Persian::dayName($record->follow_up_on).'. فقط اگر می خواهید عوض شود انتخاب کنید.'
+                                : 'در این روز، این مشتری در فهرست «پیگیری امروز» قرار می گیرد.')
                             ->options(self::FOLLOW_UP_CHOICES)
                             ->default(fn (string $operation): ?int => $operation === 'create' ? 1 : null)
                             ->required(fn (string $operation): bool => $operation === 'create')

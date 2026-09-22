@@ -65,7 +65,7 @@ class CallFollowUpTest extends TestCase
             'no_purchase_reason' => NoPurchaseReason::Price->value,
             'agent_satisfaction' => 4,
             'overall_satisfaction' => 3,
-            'notes' => 'قیمت رقیب ارزان‌تر بود',
+            'notes' => 'قیمت رقیب ارزان تر بود',
         ], $this->secretary());
 
         $call->refresh();

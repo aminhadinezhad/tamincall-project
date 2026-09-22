@@ -17,7 +17,7 @@ class FollowUpsRelationManager extends RelationManager
 {
     protected static string $relationship = 'followUps';
 
-    protected static ?string $title = 'سابقه‌ی پیگیری';
+    protected static ?string $title = 'سابقه ی پیگیری';
 
     public function isReadOnly(): bool
     {
