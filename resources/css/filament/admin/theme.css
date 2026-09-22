@@ -24,15 +24,17 @@
 
     /* glass: a diagonal sheen (brighter top-left) rather than a flat fill, a strong blur, a bright
        top edge and a faint outer outline so cards stay distinct on light parts of the backdrop */
-    --tc-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.34) 100%);
+    --tc-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.36) 55%, rgba(255, 255, 255, 0.5) 100%);
     --tc-glass-strong: rgba(255, 255, 255, 0.78);
-    --tc-glass-edge: rgba(255, 255, 255, 0.7);
-    --tc-glass-blur: blur(26px) saturate(180%);
+    --tc-glass-edge: rgba(255, 255, 255, 0.8);
+    --tc-glass-blur: blur(24px) saturate(170%);
+    /* light catching the top-left edge, a dimmer bottom-right edge, a soft blue drop shadow */
     --tc-glass-shadow:
-        0 10px 40px rgba(22, 65, 148, 0.12),
+        0 12px 36px rgba(22, 65, 148, 0.1),
+        0 2px 6px rgba(22, 65, 148, 0.04),
         0 0 0 1px rgba(22, 65, 148, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.85),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+        inset 1px 1px 0 rgba(255, 255, 255, 0.95),
+        inset -1px -1px 0 rgba(255, 255, 255, 0.3);
     --tc-radius: 22px;
 }
 
@@ -51,12 +53,15 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    /* soft: just enough colour for the glass to show, the page stays pale */
+    /* soft but not flat: faint glows spread behind the content (not only in the corners), so the
+       glass always has a little colour to blur while the page as a whole stays pale */
     background:
-        radial-gradient(38rem 38rem at 92% 8%, rgba(22, 65, 148, 0.2), transparent 70%),
-        radial-gradient(34rem 34rem at 6% 94%, rgba(241, 136, 21, 0.14), transparent 70%),
-        radial-gradient(40rem 30rem at 45% 55%, rgba(115, 141, 191, 0.12), transparent 70%),
-        linear-gradient(160deg, #f3f6fa 0%, #e8eef8 100%);
+        radial-gradient(32rem 32rem at 88% 12%, rgba(22, 65, 148, 0.18), transparent 70%),
+        radial-gradient(26rem 26rem at 30% 28%, rgba(86, 152, 231, 0.12), transparent 70%),
+        radial-gradient(28rem 28rem at 62% 62%, rgba(115, 141, 191, 0.14), transparent 70%),
+        radial-gradient(24rem 24rem at 14% 78%, rgba(241, 136, 21, 0.12), transparent 70%),
+        radial-gradient(22rem 22rem at 80% 92%, rgba(241, 136, 21, 0.07), transparent 70%),
+        linear-gradient(160deg, #f4f7fb 0%, #eaf0f8 100%);
 }
 
 .fi-layout,
