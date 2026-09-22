@@ -51,14 +51,12 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    /* more colour than before, so the stronger glass has something to blur; still pale overall */
+    /* soft: just enough colour for the glass to show, the page stays pale */
     background:
-        radial-gradient(40rem 40rem at 95% 5%, rgba(22, 65, 148, 0.42), transparent 68%),
-        radial-gradient(30rem 30rem at 55% 30%, rgba(86, 152, 231, 0.26), transparent 70%),
-        radial-gradient(36rem 36rem at 4% 96%, rgba(241, 136, 21, 0.32), transparent 68%),
-        radial-gradient(28rem 28rem at 30% 70%, rgba(115, 141, 191, 0.28), transparent 70%),
-        radial-gradient(26rem 26rem at 85% 85%, rgba(241, 136, 21, 0.16), transparent 70%),
-        linear-gradient(160deg, #eef3fb 0%, #e2eaf7 100%);
+        radial-gradient(38rem 38rem at 92% 8%, rgba(22, 65, 148, 0.2), transparent 70%),
+        radial-gradient(34rem 34rem at 6% 94%, rgba(241, 136, 21, 0.14), transparent 70%),
+        radial-gradient(40rem 30rem at 45% 55%, rgba(115, 141, 191, 0.12), transparent 70%),
+        linear-gradient(160deg, #f3f6fa 0%, #e8eef8 100%);
 }
 
 .fi-layout,
@@ -275,6 +273,62 @@
     width: 4px;
     border-radius: 4px;
     background: linear-gradient(180deg, var(--tc-blue-400), var(--tc-orange-400));
+}
+
+/* tiles that open a page (the three «امروز» ones are links): they lift under the pointer, their edge
+   widens and an arrow appears, so they read as clickable; the report tiles (no link) stay still */
+a.fi-wi-stats-overview-stat {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a.fi-wi-stats-overview-stat::before {
+    transition: width 0.2s ease;
+}
+
+a.fi-wi-stats-overview-stat::after {
+    content: '←';
+    position: absolute;
+    inset-block-start: 18px;
+    inset-inline-end: 20px;
+    color: var(--tc-orange-400);
+    font-size: 20px;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+a.fi-wi-stats-overview-stat:hover,
+a.fi-wi-stats-overview-stat:focus-visible {
+    transform: translateY(-4px);
+    box-shadow:
+        0 16px 40px rgba(22, 65, 148, 0.18),
+        0 0 0 1px rgba(241, 136, 21, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+}
+
+a.fi-wi-stats-overview-stat:hover::before,
+a.fi-wi-stats-overview-stat:focus-visible::before {
+    width: 6px;
+}
+
+a.fi-wi-stats-overview-stat:hover::after,
+a.fi-wi-stats-overview-stat:focus-visible::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a.fi-wi-stats-overview-stat,
+    a.fi-wi-stats-overview-stat::after {
+        transition: none;
+    }
+
+    a.fi-wi-stats-overview-stat:hover,
+    a.fi-wi-stats-overview-stat:focus-visible {
+        transform: none;
+    }
 }
 
 .fi-wi-stats-overview-stat-label {
