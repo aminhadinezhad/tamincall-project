@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use App\Enums\CallStatus;
+use App\Filament\Resources\Calls\CallResource;
+use App\Models\Call;
+use App\Support\Persian;
+use Filament\Support\Icons\Heroicon;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
+
+/**
+ * The secretary's day at a glance: who to call back today, what is overdue, what came in today.
+ * Shown to everyone and not affected by the report filters.
+ */
+class TodayOverview extends StatsOverviewWidget
+{
+    protected static ?int $sort = 1;
+
+    protected ?string $pollingInterval = '60s';
+
+    protected function getHeading(): ?string
+    {
+        return 'امروز · '.Persian::dayName(today());
+    }
+
+    protected function getStats(): array
+    {
+        $dueToday = Call::query()->where('status', CallStatus::AwaitingFollowUp)->whereDate('follow_up_on', today())->count();
+        $overdue = Call::query()->where('status', CallStatus::AwaitingFollowUp)->whereDate('follow_up_on', '<', today())->count();
+        $receivedToday = Call::query()->whereDate('created_at', today())->count();
+
+        return [
+            Stat::make('پیگیری‌های امروز', Persian::digits($dueToday))
+                ->description('مشتریانی که امروز باید با آن‌ها تماس گرفت')
+                ->descriptionIcon(Heroicon::OutlinedPhoneArrowUpRight)
+                ->color('primary')
+                ->url(CallResource::getUrl('index', ['tab' => 'today'])),
+
+            Stat::make('عقب‌افتاده', Persian::digits($overdue))
+                ->description($overdue > 0 ? 'پیگیری‌هایی که از روزهای قبل مانده' : 'هیچ پیگیری عقب‌افتاده‌ای نیست')
+                ->descriptionIcon($overdue > 0 ? Heroicon::OutlinedExclamationTriangle : Heroicon::OutlinedCheckCircle)
+                ->color($overdue > 0 ? 'danger' : 'success')
+                ->url(CallResource::getUrl('index', ['tab' => 'today'])),
+
+            Stat::make('تماس‌های امروز', Persian::digits($receivedToday))
+                ->description('تماس‌های ورودی ثبت‌شده امروز')
+                ->descriptionIcon(Heroicon::OutlinedPhoneArrowDownLeft)
+                ->url(CallResource::getUrl('index', ['tab' => 'all'])),
+        ];
+    }
+}

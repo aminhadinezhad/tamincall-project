@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Filament\Resources\Calls\Schemas;
+
+use App\Models\Call;
+use App\Models\Customer;
+use App\Support\Persian;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+
+class CallForm
+{
+    /** When to call the customer back, counted in days from today (Fridays are skipped). */
+    public const FOLLOW_UP_CHOICES = [
+        1 => 'فردا',
+        2 => 'دو روز بعد',
+        3 => 'سه روز بعد',
+        7 => 'یک هفته بعد',
+    ];
+
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('تماس مشتری')
+                    ->columns(2)
+                    ->columnSpanFull()
+                    ->components([
+                        Select::make('customer_id')
+                            ->label('مشتری')
+                            ->relationship('customer', 'name')
+                            ->getOptionLabelFromRecordUsing(fn (Customer $record): string => $record->name.' - '.$record->phone)
+                            ->searchable(['name', 'phone', 'company'])
+                            ->preload()
+                            ->required()
+                            ->helperText('با نام یا شماره جستجو کنید؛ مشتری جدید را با دکمه + اضافه کنید.')
+                            ->createOptionForm(self::customerFields())
+                            ->createOptionModalHeading('مشتری جدید'),
+
+                        Select::make('sales_agent_id')
+                            ->label('ارجاع به کارشناس فروش')
+                            ->relationship('salesAgent', 'name', fn ($query) => $query->active())
+                            ->preload()
+                            ->required(),
+
+                        Textarea::make('request')
+                            ->label('درخواست مشتری')
+                            ->placeholder('مثلاً: استعلام قیمت ۵۰ کارتن دستمال کاغذی برای شرکت')
+                            ->rows(3)
+                            ->required()
+                            ->columnSpanFull(),
+
+                        ToggleButtons::make('follow_up_in')
+                            ->label(fn (string $operation): string => $operation === 'create' ? 'پیگیری با مشتری' : 'تغییر زمان پیگیری')
+                            ->helperText(fn (?Call $record): ?string => $record
+                                ? 'زمان فعلی: '.Persian::dayName($record->follow_up_on).'. فقط اگر می‌خواهید عوض شود انتخاب کنید.'
+                                : 'در این روز، این مشتری در فهرست «پیگیری امروز» قرار می‌گیرد.')
+                            ->options(self::FOLLOW_UP_CHOICES)
+                            ->default(fn (string $operation): ?int => $operation === 'create' ? 1 : null)
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->inline()
+                            ->dehydrated()
+                            ->columnSpanFull(),
+                    ]),
+            ]);
+    }
+
+    /**
+     * Customer fields, shared by the call form's "new customer" button and the customers page.
+     *
+     * @return array<int, Component>
+     */
+    public static function customerFields(): array
+    {
+        return [
+            TextInput::make('name')
+                ->label('نام و نام خانوادگی')
+                ->required()
+                ->maxLength(255),
+
+            TextInput::make('phone')
+                ->label('شماره موبایل')
+                ->tel()
+                ->required()
+                ->placeholder('09123456789')
+                ->extraInputAttributes(['dir' => 'ltr'])
+                ->dehydrateStateUsing(fn (?string $state): ?string => Customer::normalizePhone($state))
+                // inside the call form's "new customer" popup the record is the call, not a customer
+                ->rules(fn ($record) => [
+                    function (string $attribute, $value, \Closure $fail) use ($record) {
+                        $record = $record instanceof Customer ? $record : null;
+                        $phone = Customer::normalizePhone($value);
+
+                        if (! preg_match('/^09\d{9}$/', (string) $phone)) {
+                            $fail('شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.');
+
+                            return;
+                        }
+
+                        $taken = Customer::where('phone', $phone)->when($record, fn ($q) => $q->whereKeyNot($record->getKey()))->first();
+
+                        if ($taken) {
+                            $fail("این شماره قبلاً برای «{$taken->name}» ثبت شده است.");
+                        }
+                    },
+                ]),
+
+            TextInput::make('company')
+                ->label('شرکت / سازمان')
+                ->maxLength(255),
+
+            Textarea::make('notes')
+                ->label('توضیحات')
+                ->rows(2),
+        ];
+    }
+}

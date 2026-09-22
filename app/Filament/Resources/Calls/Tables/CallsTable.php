@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Filament\Resources\Calls\Tables;
+
+use App\Enums\CallStatus;
+use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
+use App\Models\Call;
+use App\Support\Persian;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
+class CallsTable
+{
+    /** Periods for the "date of call" filter, in days back from today. */
+    public const PERIODS = [
+        'today' => 'امروز',
+        '7' => '۷ روز اخیر',
+        '30' => '۳۰ روز اخیر',
+        '90' => '۳ ماه اخیر',
+    ];
+
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['customer', 'salesAgent', 'result']))
+            ->columns([
+                TextColumn::make('created_at')
+                    ->label('تاریخ تماس')
+                    ->formatStateUsing(fn ($state): string => Persian::date($state))
+                    ->sortable(),
+
+                TextColumn::make('customer.name')
+                    ->label('مشتری')
+                    ->description(fn (Call $record): ?string => $record->customer->company)
+                    ->searchable(),
+
+                TextColumn::make('customer.phone')
+                    ->label('شماره')
+                    ->formatStateUsing(fn ($state): string => Persian::digits($state))
+                    ->copyable()
+                    ->searchable(),
+
+                TextColumn::make('salesAgent.name')
+                    ->label('کارشناس فروش')
+                    ->placeholder('—'),
+
+                TextColumn::make('request')
+                    ->label('درخواست')
+                    ->limit(40)
+                    ->tooltip(fn (Call $record): string => $record->request)
+                    ->toggleable(),
+
+                TextColumn::make('status')
+                    ->label('وضعیت')
+                    ->badge(),
+
+                TextColumn::make('follow_up_on')
+                    ->label('تاریخ پیگیری')
+                    ->formatStateUsing(fn ($state, Call $record): string => $record->status === CallStatus::AwaitingFollowUp ? Persian::date($state) : '—')
+                    ->color(fn (Call $record): ?string => $record->status === CallStatus::AwaitingFollowUp && $record->follow_up_on->lt(today()) ? 'danger' : null)
+                    ->sortable(),
+
+                IconColumn::make('result.purchased')
+                    ->label('خرید کرد؟')
+                    ->boolean()
+                    ->placeholder('—'),
+            ])
+            ->defaultSort('follow_up_on')
+            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersFormColumns(3)
+            ->filters([
+                SelectFilter::make('sales_agent_id')
+                    ->label('کارشناس فروش')
+                    ->relationship('salesAgent', 'name')
+                    ->preload(),
+
+                SelectFilter::make('status')
+                    ->label('وضعیت')
+                    ->options(CallStatus::class),
+
+                Filter::make('period')
+                    ->schema([
+                        Select::make('period')
+                            ->label('تاریخ تماس')
+                            ->options(self::PERIODS)
+                            ->placeholder('همه'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['period'] ?? null,
+                        fn (Builder $query, string $period): Builder => $period === 'today'
+                            ? $query->whereDate('created_at', today())
+                            : $query->where('created_at', '>=', today()->subDays((int) $period)),
+                    )),
+            ])
+            ->recordActions([
+                RecordFollowUpAction::make(),
+                EditAction::make()->label('جزئیات'),
+                DeleteAction::make(),
+            ])
+            ->emptyStateHeading('تماسی نیست')
+            ->emptyStateDescription(null);
+    }
+}
