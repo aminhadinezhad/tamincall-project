@@ -62,8 +62,8 @@ class CustomerResource extends Resource
                 DeleteAction::make()
                     ->visible(fn (): bool => auth()->user()->isManager())
                     ->modalDescription(fn (Customer $record): string => $record->calls()->count() > 0
-                        ? 'تمام تماس ها و نتیجه های این مشتری هم پاک می شوند و دیگر در گزارش ها دیده نمی شوند. این کار برگشت ندارد.'
-                        : 'این مشتری پاک می شود. این کار برگشت ندارد.'),
+                        ? 'تمام تماس ها و نتیجه های این مشتری هم پاک می شوند و دیگر در گزارش ها دیده نمی شوند.'
+                        : 'این مشتری پاک می شود.'),
             ]);
     }
 
