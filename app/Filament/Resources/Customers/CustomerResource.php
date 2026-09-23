@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Customers;
 
-use App\Enums\CustomerType;
 use App\Filament\Resources\Calls\Schemas\CallForm;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
 use App\Filament\Resources\Customers\Pages\EditCustomer;
@@ -19,7 +18,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -54,16 +53,21 @@ class CustomerResource extends Resource
             ->columns([
                 TextColumn::make('name')->label('نام')->searchable()->sortable(),
                 TextColumn::make('phone')->label('شماره')->formatStateUsing(fn ($state): string => Persian::digits($state))->copyable()->searchable(),
-                TextColumn::make('type')->label('نوع مشتری')->badge()->color(fn ($state): string => $state === CustomerType::Legal ? 'info' : 'gray')->placeholder('—'),
+                // the badge takes its colour from the enum, the same colour as the slice in the report
+                TextColumn::make('type')->label('نوع مشتری')->badge()->placeholder('—'),
                 TextColumn::make('company')->label('شرکت / سازمان')->placeholder('—')->searchable(),
                 TextColumn::make('calls_count')->label('تعداد تماس')->counts('calls')->formatStateUsing(fn ($state): string => Persian::digits($state))->sortable(),
                 TextColumn::make('created_at')->label('اولین تماس')->formatStateUsing(fn ($state): string => Persian::date($state))->sortable()->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                // deleted customers are hidden everywhere; a manager can look at them here
-                TrashedFilter::make()
+                // one tick box: off, the deleted customers are hidden; on, only they are shown
+                Filter::make('trashed')
                     ->label('پاک شده ها')
+                    ->baseQuery(fn (Builder $query): Builder => $query->withoutGlobalScopes([SoftDeletingScope::class]))
+                    ->query(fn (Builder $query, array $data): Builder => ($data['isActive'] ?? false)
+                        ? $query->onlyTrashed()
+                        : $query->withoutTrashed())
                     ->visible(fn (): bool => auth()->user()->isManager()),
             ])
             ->recordActions([
@@ -78,19 +82,6 @@ class CustomerResource extends Resource
                     ->label('برگرداندن')
                     ->modalDescription('این مشتری و تماس هایش دوباره به لیست ها و گزارش ها برمی گردند.'),
             ]);
-    }
-
-    /**
-     * A manager's table can reach deleted customers, so its «پاک شده ها» filter has something to
-     * show; for everyone else they stay out of reach.
-     */
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
-
-        return auth()->user()?->isManager()
-            ? $query->withoutGlobalScopes([SoftDeletingScope::class])
-            : $query;
     }
 
     public static function getRelations(): array

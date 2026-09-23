@@ -33,7 +33,7 @@ enum CallStatus: string implements HasColor, HasLabel
         return match ($this) {
             self::AwaitingFollowUp => 'warning',
             self::Done => 'success',
-            self::Unreachable => 'gray',
+            self::Unreachable => 'danger',
         };
     }
 }

@@ -19,9 +19,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CallsTable
 {
@@ -93,10 +93,10 @@ class CallsTable
                     ->placeholder('—'),
 
                 // switched on from the columns menu when needed; off by default so a row fits a laptop screen
+                // the badge takes its colour from the enum, the same colour as the slice in the report
                 TextColumn::make('source')
                     ->label('نحوه آشنایی')
                     ->badge()
-                    ->color('gray')
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -151,9 +151,14 @@ class CallsTable
                             : $query->where('created_at', '>=', today()->subDays((int) $period)),
                     )),
 
-                // deleted calls are hidden everywhere; a manager can look at them here and bring one back
-                TrashedFilter::make()
+                // one tick box: off, the deleted calls are hidden; on, only they are shown, so a
+                // manager can bring one back
+                Filter::make('trashed')
                     ->label('پاک شده ها')
+                    ->baseQuery(fn (Builder $query): Builder => $query->withoutGlobalScopes([SoftDeletingScope::class]))
+                    ->query(fn (Builder $query, array $data): Builder => ($data['isActive'] ?? false)
+                        ? $query->onlyTrashed()
+                        : $query->withoutTrashed())
                     ->visible(fn (): bool => auth()->user()?->isManager() ?? false),
             ])
             // the happy call stays a visible button; the rest fold into the row's menu

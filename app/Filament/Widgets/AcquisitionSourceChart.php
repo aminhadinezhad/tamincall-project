@@ -92,10 +92,10 @@ class AcquisitionSourceChart extends ChartWidget
             ->keyBy('source');
 
         $figures = [];
-        foreach (AcquisitionSource::cases() as $i => $source) {
+        foreach (AcquisitionSource::cases() as $source) {
             $figures[] = [
                 'label' => $source->getLabel(),
-                'color' => ChartStyle::CATEGORICAL[$i],
+                'color' => $source->chartColor(),
                 'calls' => (int) ($calls[$source->value] ?? 0),
                 'reached' => (int) ($results[$source->value]->reached ?? 0),
                 'purchased' => (int) ($results[$source->value]->bought ?? 0),

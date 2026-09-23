@@ -93,10 +93,10 @@ class CustomerTypeChart extends ChartWidget
             ->keyBy('type');
 
         $figures = [];
-        foreach (CustomerType::cases() as $i => $type) {
+        foreach (CustomerType::cases() as $type) {
             $figures[] = [
                 'label' => $type->getLabel(),
-                'color' => ChartStyle::CATEGORICAL[$i],
+                'color' => $type->chartColor(),
                 'calls' => (int) ($calls[$type->value] ?? 0),
                 'reached' => (int) ($results[$type->value]->reached ?? 0),
                 'purchased' => (int) ($results[$type->value]->bought ?? 0),

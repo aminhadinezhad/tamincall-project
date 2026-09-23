@@ -14,8 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
 class CallResource extends Resource
@@ -42,19 +40,6 @@ class CallResource extends Resource
     public static function table(Table $table): Table
     {
         return CallsTable::configure($table);
-    }
-
-    /**
-     * A manager's table can reach deleted calls, so its «پاک شده ها» filter has something to show;
-     * for everyone else they stay out of reach.
-     */
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
-
-        return auth()->user()?->isManager()
-            ? $query->withoutGlobalScopes([SoftDeletingScope::class])
-            : $query;
     }
 
     public static function getRelations(): array
