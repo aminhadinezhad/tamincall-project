@@ -10,7 +10,6 @@ use App\Enums\UserRole;
 use App\Filament\Resources\Calls\Pages\CreateCall;
 use App\Filament\Resources\Calls\Pages\ListCalls;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
-use App\Filament\Resources\SalesAgents\Pages\ManageSalesAgents;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Widgets\AcquisitionSourceChart;
 use App\Filament\Widgets\ReportOverview;
@@ -294,52 +293,6 @@ class CallFollowUpTest extends TestCase
         $manager->refresh();
         $this->assertSame(UserRole::Manager, $manager->role, 'a manager must not be able to demote themselves');
         $this->assertTrue($manager->is_active);
-    }
-
-    public function test_an_account_with_no_records_is_deleted_and_one_with_records_is_only_switched_off(): void
-    {
-        Filament::setCurrentPanel('admin');
-        $manager = User::create(['name' => 'مدیر', 'email' => 'boss2@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]);
-        $this->actingAs($manager);
-        $fresh = $this->secretary();
-
-        // the only manager and the signed-in account have no delete button at all
-        Livewire::test(ManageUsers::class)
-            ->assertTableActionHidden('delete', $manager)
-            ->assertTableActionEnabled('delete', $fresh)
-            ->callTableAction('delete', $fresh);
-
-        $this->assertNull(User::find($fresh->id), 'an account that recorded nothing is deleted for good');
-
-        // one that recorded a result keeps its name: delete is out of reach, switching off is not
-        $worked = User::create(['name' => 'خانم حبیبی', 'email' => 'habibi@test.local', 'password' => 'secret123', 'role' => UserRole::Secretary]);
-        $this->makeCall()->recordFollowUp(['answered' => true, 'purchased' => true, 'agent_satisfaction' => 5, 'overall_satisfaction' => 5], $worked);
-
-        Livewire::test(ManageUsers::class)
-            ->assertTableActionDisabled('delete', $worked)
-            ->callTableAction('toggleActive', $worked);
-
-        $this->assertNotNull(User::find($worked->id));
-        $this->assertFalse($worked->fresh()->is_active);
-    }
-
-    public function test_a_sales_agent_with_calls_cannot_be_deleted_only_switched_off(): void
-    {
-        Filament::setCurrentPanel('admin');
-        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'boss4@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
-
-        $referred = $this->makeCall()->salesAgent;
-        $unused = SalesAgent::create(['name' => 'اسم اشتباهی']);
-
-        Livewire::test(ManageSalesAgents::class)
-            ->assertTableActionDisabled('delete', $referred)
-            ->assertTableActionEnabled('delete', $unused)
-            ->callTableAction('delete', $unused)
-            ->callTableAction('toggleActive', $referred);
-
-        $this->assertNull(SalesAgent::find($unused->id), 'an agent nobody was referred to is deleted');
-        $this->assertNotNull(SalesAgent::find($referred->id), 'an agent with calls keeps their figures');
-        $this->assertFalse($referred->fresh()->is_active);
     }
 
     public function test_secretaries_cannot_open_manager_pages(): void

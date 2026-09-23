@@ -29,13 +29,4 @@ class SalesAgent extends Model
     {
         $query->where('is_active', true);
     }
-
-    /**
-     * An agent with calls behind them is part of the reports, so they are switched off rather than
-     * deleted; only an agent nobody was ever referred to can be removed for good.
-     */
-    public function hasHistory(): bool
-    {
-        return $this->calls()->withTrashed()->exists();
-    }
 }

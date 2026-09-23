@@ -6,7 +6,6 @@ use App\Filament\Resources\SalesAgents\Pages\ManageSalesAgents;
 use App\Models\SalesAgent;
 use App\Support\Persian;
 use BackedEnum;
-use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
@@ -21,8 +20,7 @@ use UnitEnum;
 
 /**
  * The sales staff customers are referred to. Managers only. An agent who leaves is switched off
- * rather than deleted, so their past calls and figures stay in the reports; deleting is kept for an
- * entry with nothing behind it, such as a name typed by mistake.
+ * rather than deleted, so their past calls and figures stay in the reports.
  */
 class SalesAgentResource extends Resource
 {
@@ -64,28 +62,7 @@ class SalesAgentResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
-
-                // the everyday way out: the agent leaves the referral form, the reports keep them
-                Action::make('toggleActive')
-                    ->label(fn (SalesAgent $record): string => $record->is_active ? 'غیرفعال کردن' : 'فعال کردن')
-                    ->icon(fn (SalesAgent $record): Heroicon => $record->is_active ? Heroicon::OutlinedPause : Heroicon::OutlinedPlay)
-                    ->color(fn (SalesAgent $record): string => $record->is_active ? 'gray' : 'success')
-                    ->requiresConfirmation()
-                    ->modalDescription(fn (SalesAgent $record): string => $record->is_active
-                        ? 'این کارشناس دیگر در فرم ارجاع دیده نمی شود، ولی تماس ها و آمار گذشته اش سر جای خود می ماند.'
-                        : 'این کارشناس دوباره در فرم ارجاع دیده می شود.')
-                    ->action(fn (SalesAgent $record) => $record->update(['is_active' => ! $record->is_active])),
-
-                // only an agent nobody was referred to is deleted for good; one with calls behind
-                // them would take their share of the reports with them
-                DeleteAction::make()
-                    ->disabled(fn (SalesAgent $record): bool => $record->hasHistory())
-                    // grey, not red, when it cannot be used, so the row does not promise a delete
-                    ->color(fn (SalesAgent $record): string => $record->hasHistory() ? 'gray' : 'danger')
-                    ->tooltip(fn (SalesAgent $record): ?string => $record->hasHistory()
-                        ? 'این کارشناس تماس ثبت شده دارد و برای سالم ماندن گزارش ها پاک نمی شود. به جایش غیرفعالش کنید.'
-                        : null)
-                    ->modalDescription('این کارشناس هیچ تماسی ندارد، پس کامل پاک می شود. این کار برگشت ندارد.'),
+                DeleteAction::make()->visible(fn (SalesAgent $record): bool => ! $record->calls()->exists()),
             ]);
     }
 
