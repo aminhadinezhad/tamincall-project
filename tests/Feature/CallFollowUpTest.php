@@ -295,6 +295,38 @@ class CallFollowUpTest extends TestCase
         $this->assertTrue($manager->is_active);
     }
 
+    public function test_a_user_is_deleted_for_good_but_never_the_last_manager_or_yourself(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $manager = User::create(['name' => 'مدیر', 'email' => 'boss2@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]);
+        $this->actingAs($manager);
+        $secretary = $this->secretary();
+
+        // the only manager and the signed-in user have no delete button
+        Livewire::test(ManageUsers::class)
+            ->assertTableActionHidden('delete', $manager)
+            ->assertTableActionVisible('delete', $secretary)
+            ->callTableAction('delete', $secretary);
+
+        $this->assertNull(User::find($secretary->id), 'a deleted user is gone for good');
+
+        // a second manager makes the first one deletable again
+        $other = User::create(['name' => 'مدیر دوم', 'email' => 'boss3@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]);
+        Livewire::test(ManageUsers::class)->assertTableActionVisible('delete', $other);
+    }
+
+    public function test_deleting_a_sales_agent_keeps_their_calls_without_an_agent(): void
+    {
+        $call = $this->makeCall();
+        $agent = $call->salesAgent;
+
+        $agent->delete();
+
+        $call->refresh();
+        $this->assertNull(SalesAgent::find($agent->id));
+        $this->assertNull($call->sales_agent_id, 'the call stays as the customer history, with no agent');
+    }
+
     public function test_secretaries_cannot_open_manager_pages(): void
     {
         $this->actingAs($this->secretary());

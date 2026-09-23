@@ -579,6 +579,24 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     border-radius: var(--tc-radius-md) !important;
 }
 
+/* menu rows (the account menu, the row menus, the column list): a soft tint of their own colour
+   under the pointer, never Filament's flat white block on the glass */
+.fi-dropdown-list-item:not(.fi-disabled):not([disabled]):hover,
+.fi-dropdown-list-item:not(.fi-disabled):not([disabled]):focus-visible,
+.fi-dropdown-list-item:not(.fi-disabled):not([disabled]).fi-selected {
+    background-color: rgba(22, 65, 148, 0.08) !important;
+}
+
+.fi-dropdown-list-item.fi-color-danger:not(.fi-disabled):not([disabled]):hover,
+.fi-dropdown-list-item.fi-color-danger:not(.fi-disabled):not([disabled]):focus-visible {
+    background-color: rgba(220, 38, 38, 0.1) !important;
+}
+
+.fi-dropdown-list-item.fi-color-warning:not(.fi-disabled):not([disabled]):hover,
+.fi-dropdown-list-item.fi-color-warning:not(.fi-disabled):not([disabled]):focus-visible {
+    background-color: rgba(241, 136, 21, 0.12) !important;
+}
+
 /* --- keyboard focus: one visible ring on everything you can tab to ----------------------------- */
 
 .fi-sidebar-item-btn:focus-visible,

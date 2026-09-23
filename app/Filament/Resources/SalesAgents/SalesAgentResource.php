@@ -62,7 +62,12 @@ class SalesAgentResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make()->visible(fn (SalesAgent $record): bool => ! $record->calls()->exists()),
+                // permanent: the agent leaves the reports for good. Their calls stay as the
+                // customer's history, with no agent on them.
+                DeleteAction::make()
+                    ->modalDescription(fn (SalesAgent $record): string => $record->calls()->exists()
+                        ? 'این کارشناس برای همیشه پاک می شود و دیگر در گزارش ها و آمار دیده نمی شود. تماس های ثبت شده اش می مانند ولی بدون کارشناس. این کار برگشت ندارد.'
+                        : 'این کارشناس برای همیشه پاک می شود. این کار برگشت ندارد.'),
             ]);
     }
 

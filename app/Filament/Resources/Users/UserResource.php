@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Models\User;
 use BackedEnum;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -79,7 +80,18 @@ class UserResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
+                // permanent. Not on yourself, and not on the last manager, so the panel always keeps
+                // someone who can manage it. Past calls keep their text, with no name on them.
+                DeleteAction::make()
+                    ->visible(fn (User $record): bool => ! $record->is(auth()->user()) && ! static::isLastManager($record))
+                    ->modalDescription('این حساب برای همیشه پاک می شود. تماس هایی که ثبت کرده می مانند ولی بدون نام ثبت کننده. این کار برگشت ندارد.'),
             ]);
+    }
+
+    /** The only manager left: deleting them would leave the panel with nobody to manage it. */
+    private static function isLastManager(User $record): bool
+    {
+        return $record->isManager() && User::query()->where('role', UserRole::Manager)->count() <= 1;
     }
 
     public static function getPages(): array

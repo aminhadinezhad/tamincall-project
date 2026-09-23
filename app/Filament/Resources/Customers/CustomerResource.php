@@ -79,6 +79,19 @@ class CustomerResource extends Resource
             ]);
     }
 
+    /**
+     * A manager can open a deleted customer's file, which is how they check it before bringing it
+     * back; the table's «مشتریان حذف شده» tick box decides what the list itself shows.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        return auth()->user()?->isManager()
+            ? $query->withoutGlobalScopes([SoftDeletingScope::class])
+            : $query;
+    }
+
     public static function getRelations(): array
     {
         return [
