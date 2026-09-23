@@ -4,59 +4,70 @@
 @source '../../../../resources/views/filament/**/*';
 
 /* ==========================================================================
-   Tamin Call: the Tamin Falat colours as a clean, flat admin panel.
+   Tamin Call: the Tamin Falat colours in a soft UI.
 
    The rules of this theme:
-   - one surface colour (white) on one page colour (near white), told apart by a
-     hairline border, not by a shadow;
-   - shadows only on what floats above the page: dialogs, menus, the raised tile;
-   - navy is the colour of actions and of the navigation, orange marks whatever is
-     chosen: the selected option, the active tab, the page you are on;
-   - one radius scale, one border colour, one muted text colour;
-   - no blur and no transparency, so text stays crisp and phones stay fast.
+   - one soft grey canvas; the side bar and the top bar sit on it, they are not
+     boxes of their own;
+   - white cards with no border, lifted by one wide, faint shadow;
+   - generous rounding, one scale for it;
+   - every menu icon sits in a small white tile; the page you are on turns its
+     tile into the brand gradient;
+   - navy is the colour of actions, orange marks whatever is chosen: the
+     selected option, the active tab, the page you are on;
+   - gradients run at one angle (310deg) and only on small solid things:
+     buttons, chosen options, icon tiles. Never on text blocks or on the page.
 
    Light only (darkMode(false)).
    ========================================================================== */
 
 :root {
     /* brand */
-    --tc-navy-900: #0b1b38;
-    --tc-navy-800: #102547;
-    --tc-navy-700: #16305a;
+    --tc-navy: #0b1b38;
     --tc-blue-700: #123476;
     --tc-blue-600: #164194;
     --tc-blue-500: #2a5bc0;
-    --tc-blue-50: #eef3fc;
+    --tc-blue-300: #7ea0e6;
+    --tc-orange-600: #d9730d;
     --tc-orange-500: #f18815;
-    --tc-orange-600: #d97706;
-    --tc-orange-50: #fff4e6;
+    --tc-orange-400: #f7a54a;
 
-    /* surfaces */
-    --tc-page: #f6f7f9;
+    --tc-grad-blue: linear-gradient(310deg, var(--tc-blue-700) 0%, var(--tc-blue-500) 100%);
+    --tc-grad-orange: linear-gradient(310deg, var(--tc-orange-600) 0%, var(--tc-orange-400) 100%);
+    --tc-grad-green: linear-gradient(310deg, #15803d 0%, #34c46a 100%);
+    --tc-grad-red: linear-gradient(310deg, #c62828 0%, #f05252 100%);
+    --tc-grad-grey: linear-gradient(310deg, #5b6b85 0%, #97a3b6 100%);
+
+    /* canvas and surfaces */
+    --tc-page: #f4f6fa;
     --tc-surface: #ffffff;
-    --tc-surface-sunken: #f9fafb;
-    --tc-border: #e6e8ee;
-    --tc-border-strong: #d6dae3;
+    --tc-sunken: #f0f3f8;
+    --tc-hairline: #e9edf3;
+    --tc-field-border: #d5dae3;
 
-    /* ink: 16:1 and 5.6:1 on white, both past WCAG AA */
-    --tc-ink: #101828;
-    --tc-muted: #5d6b85;
+    /* ink: 11:1 and 4.9:1 on white, both past WCAG AA */
+    --tc-ink: #1d2b4f;
+    --tc-muted: #66748f;
 
-    /* shadows: only for what floats */
-    --tc-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
-    --tc-shadow-md: 0 4px 10px rgba(16, 24, 40, 0.07), 0 1px 3px rgba(16, 24, 40, 0.05);
-    --tc-shadow-lg: 0 12px 24px rgba(16, 24, 40, 0.1), 0 4px 8px rgba(16, 24, 40, 0.05);
-    --tc-shadow-xl: 0 24px 48px rgba(11, 27, 56, 0.18), 0 8px 16px rgba(16, 24, 40, 0.08);
+    /* soft shadows: wide, faint, a little blue */
+    --tc-soft-sm: 0 2px 6px rgba(20, 40, 90, 0.06);
+    --tc-soft: 0 20px 27px rgba(20, 40, 90, 0.05);
+    --tc-soft-lg: 0 24px 40px rgba(20, 40, 90, 0.1);
+    --tc-soft-xl: 0 30px 60px rgba(11, 27, 56, 0.2);
+    --tc-tile: 0 5px 10px rgba(20, 40, 90, 0.12);
+    --tc-btn: 0 4px 7px -1px rgba(20, 40, 90, 0.16), 0 2px 4px -1px rgba(20, 40, 90, 0.08);
+    --tc-btn-hover: 0 7px 14px rgba(20, 40, 90, 0.16), 0 3px 6px rgba(20, 40, 90, 0.1);
 
     /* radii */
-    --tc-radius-lg: 12px;
+    --tc-radius-xl: 18px;
+    --tc-radius-lg: 14px;
     --tc-radius-md: 10px;
     --tc-radius-sm: 8px;
 
-    --tc-focus: 2px solid var(--tc-blue-600);
+    --tc-focus: 2px solid var(--tc-blue-500);
 }
 
-/* --- page ----------------------------------------------------------------------- */
+/* --- canvas ------------------------------------------------------------------------ */
 
 .fi-body {
     min-height: 100dvh;
@@ -80,15 +91,15 @@
     color: var(--tc-muted);
 }
 
-/* --- surfaces: one white card, one hairline border -------------------------------- */
+/* --- cards: white, no border, one wide faint shadow --------------------------------- */
 
 .fi-section,
 .fi-ta-ctn,
 .fi-wi-stats-overview-stat {
     background: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border) !important;
-    border-radius: var(--tc-radius-lg) !important;
-    box-shadow: var(--tc-shadow-sm) !important;
+    border: 0 !important;
+    border-radius: var(--tc-radius-xl) !important;
+    box-shadow: var(--tc-soft) !important;
     --tw-ring-color: transparent !important;
 }
 
@@ -97,11 +108,10 @@
 .fi-section .fi-section,
 .fi-wi-stats-overview .fi-section {
     background: transparent !important;
-    border: 0 !important;
     box-shadow: none !important;
 }
 
-/* the strip a tab bar sits in is not a surface */
+/* the strip a tab bar sits in is not a card */
 .fi-sc-tabs,
 .fi-fo-tabs {
     background: transparent !important;
@@ -112,7 +122,7 @@
 
 .fi-section-header,
 .fi-ta-header {
-    border-color: var(--tc-border) !important;
+    border-color: var(--tc-hairline) !important;
 }
 
 .fi-section-header-heading,
@@ -125,7 +135,7 @@
     color: var(--tc-muted);
 }
 
-/* --- brand ------------------------------------------------------------------------ */
+/* --- brand ------------------------------------------------------------------------- */
 
 .tc-brand {
     display: inline-flex;
@@ -136,11 +146,11 @@
 .tc-brand__mark {
     display: grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--tc-radius-md);
     background-color: #fff;
-    box-shadow: inset 0 0 0 1px var(--tc-border);
+    box-shadow: var(--tc-tile);
 }
 
 .tc-brand__mark svg {
@@ -155,11 +165,11 @@
     white-space: nowrap;
 }
 
-/* --- top bar: white, with one line under it ---------------------------------------- */
+/* --- top bar: part of the canvas ------------------------------------------------------ */
 
 .fi-topbar {
-    background: var(--tc-surface) !important;
-    border-bottom: 1px solid var(--tc-border) !important;
+    background: var(--tc-page) !important;
+    border: 0 !important;
     box-shadow: none !important;
 }
 
@@ -169,13 +179,15 @@
 }
 
 .fi-topbar .fi-icon-btn:hover {
-    background-color: var(--tc-surface-sunken);
+    background-color: var(--tc-surface);
+    box-shadow: var(--tc-soft-sm);
 }
 
 .fi-topbar .fi-global-search-field .fi-input-wrp {
-    background-color: var(--tc-surface-sunken) !important;
-    border: 1px solid var(--tc-border) !important;
+    background-color: var(--tc-surface) !important;
+    border: 1px solid var(--tc-hairline) !important;
     border-radius: var(--tc-radius-md);
+    box-shadow: var(--tc-soft-sm) !important;
     --tw-ring-color: transparent !important;
 }
 
@@ -188,79 +200,96 @@
     color: var(--tc-muted);
 }
 
-/* --- side bar: navy ---------------------------------------------------------------- */
+/* --- side bar: on the canvas, every icon in its own tile ------------------------------ */
 
 .fi-sidebar {
-    background: var(--tc-navy-900) !important;
-    border-inline-end: 0 !important;
+    background: var(--tc-page) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* on a phone the side bar slides over the page, so there it is a card */
+@media (max-width: 1023.98px) {
+    .fi-sidebar.fi-sidebar-open {
+        background: var(--tc-surface) !important;
+        box-shadow: var(--tc-soft-xl) !important;
+    }
 }
 
 .fi-sidebar-nav {
-    padding-block: 12px;
+    padding-block: 10px;
 }
 
 .fi-sidebar-group-label {
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--tc-muted);
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.02em;
-}
-
-.fi-sidebar-group-collapse-button .fi-icon {
-    color: rgba(255, 255, 255, 0.4);
 }
 
 .fi-sidebar-item-btn {
     border-radius: var(--tc-radius-md);
-    padding-block: 9px;
+    padding-block: 8px;
+    gap: 12px;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* the icon tile */
+.fi-sidebar-item-btn > .fi-icon {
+    box-sizing: border-box;
+    width: 34px;
+    height: 34px;
+    padding: 8px;
+    border-radius: var(--tc-radius-sm);
+    background-color: var(--tc-surface);
+    box-shadow: var(--tc-tile);
+    color: var(--tc-blue-600);
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .fi-sidebar-item-label {
-    color: rgba(255, 255, 255, 0.78);
-    font-weight: 500;
+    color: var(--tc-muted);
+    font-weight: 600;
 }
 
-.fi-sidebar-item-btn > .fi-icon {
-    color: rgba(255, 255, 255, 0.5);
+.fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-sidebar-item-label {
+    color: var(--tc-ink);
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover {
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: transparent;
 }
 
-.fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-sidebar-item-label,
-.fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-icon {
-    color: #fff;
-}
-
-/* the page you are on: nothing changes under the pointer */
+/* the page you are on: a white card, its tile orange; nothing changes under the pointer */
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:hover,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:focus-visible {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.12) !important;
+    background-color: var(--tc-surface) !important;
+    box-shadow: var(--tc-soft-lg);
 }
 
-/* orange marker on the reading edge of the active item */
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
-    content: '';
-    position: absolute;
-    inset-block: 8px;
-    inset-inline-start: 0;
-    width: 3px;
-    border-radius: 3px;
-    background-color: var(--tc-orange-500);
-}
-
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    background: var(--tc-grad-orange);
     color: #fff;
-    font-weight: 700;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
+    color: var(--tc-ink);
+    font-weight: 800;
 }
 
 .fi-sidebar-item .fi-badge {
-    background-color: var(--tc-orange-500) !important;
+    background: var(--tc-grad-orange) !important;
     color: #fff !important;
+    border-radius: 999px;
+    box-shadow: none;
+    --tw-ring-color: transparent !important;
+}
+
+/* a collapsed side bar keeps just the tiles */
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-btn {
+    justify-content: center;
 }
 
 /* --- stat tiles --------------------------------------------------------------------- */
@@ -270,40 +299,37 @@
     overflow: hidden;
 }
 
-.fi-wi-stats-overview-stat::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    width: 3px;
-    background-color: var(--tc-blue-600);
-}
-
-/* tiles that open a page (the three «امروز» ones are links): they lift a little and an
-   arrow appears, so they read as clickable; the report tiles (no link) stay still */
+/* tiles that open a page (the three «امروز» ones are links): they lift and an arrow appears,
+   so they read as clickable; the report tiles (no link) stay still */
 a.fi-wi-stats-overview-stat {
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 a.fi-wi-stats-overview-stat::after {
     content: '←';
     position: absolute;
-    inset-block-start: 16px;
-    inset-inline-end: 18px;
-    color: var(--tc-orange-500);
-    font-size: 18px;
+    inset-block-start: 18px;
+    inset-inline-end: 20px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--tc-radius-sm);
+    background: var(--tc-grad-orange);
+    color: #fff;
+    font-size: 16px;
     font-weight: 700;
+    box-shadow: var(--tc-tile);
     opacity: 0;
     transform: translateX(6px);
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 a.fi-wi-stats-overview-stat:hover,
 a.fi-wi-stats-overview-stat:focus-visible {
-    transform: translateY(-2px);
-    border-color: var(--tc-border-strong) !important;
-    box-shadow: var(--tc-shadow-md) !important;
+    transform: translateY(-4px);
+    box-shadow: var(--tc-soft-lg) !important;
 }
 
 a.fi-wi-stats-overview-stat:hover::after,
@@ -314,19 +340,21 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 @media (prefers-reduced-motion: reduce) {
     a.fi-wi-stats-overview-stat,
-    a.fi-wi-stats-overview-stat::after {
-        transition: none;
+    a.fi-wi-stats-overview-stat::after,
+    .fi-btn {
+        transition: none !important;
     }
 
     a.fi-wi-stats-overview-stat:hover,
-    a.fi-wi-stats-overview-stat:focus-visible {
-        transform: none;
+    a.fi-wi-stats-overview-stat:focus-visible,
+    .fi-btn:hover {
+        transform: none !important;
     }
 }
 
 .fi-wi-stats-overview-stat-label {
     color: var(--tc-muted);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .fi-wi-stats-overview-stat-value {
@@ -336,27 +364,31 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 .fi-wi-stats-overview-header-heading {
     color: var(--tc-ink);
-    font-weight: 700;
+    font-weight: 800;
 }
 
-/* --- tables --------------------------------------------------------------------------- */
+/* --- tables ----------------------------------------------------------------------------- */
 
-.fi-ta-table > thead > tr > th {
-    background-color: var(--tc-surface-sunken);
+.fi-ta-table > thead,
+.fi-ta-table > thead > tr,
+.fi-ta-table > thead > tr > th,
+.fi-ta-header-cell {
+    background-color: transparent !important;
 }
 
 .fi-ta-header-cell-label {
     color: var(--tc-muted);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .fi-ta-row {
     background: transparent;
+    transition: background-color 0.15s ease;
 }
 
 .fi-ta-row:hover {
-    background-color: var(--tc-surface-sunken);
+    background-color: #f8fafd;
 }
 
 .fi-ta-table > tbody,
@@ -364,32 +396,35 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 .fi-ta-header-toolbar,
 .fi-ta-filters,
 .fi-pagination {
-    border-color: var(--tc-border) !important;
+    border-color: var(--tc-hairline) !important;
 }
 
 .fi-ta-text-item-label {
     color: var(--tc-ink);
 }
 
-.fi-ta-empty-state {
-    background-color: var(--tc-surface);
+/* badges as soft pills */
+.fi-badge {
+    border-radius: 999px;
+    font-weight: 700;
+    padding-inline: 10px;
 }
 
-/* --- tabs: a light strip, the chosen one orange ---------------------------------------- */
+/* --- tabs: a soft strip, the chosen one an orange pill ---------------------------------- */
 
 .fi-tabs {
     background-color: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border) !important;
-    border-radius: var(--tc-radius-md) !important;
-    box-shadow: var(--tc-shadow-sm) !important;
-    padding: 4px;
+    border: 0 !important;
+    border-radius: var(--tc-radius-lg) !important;
+    box-shadow: var(--tc-soft) !important;
+    padding: 5px;
     gap: 2px;
     --tw-ring-color: transparent !important;
 }
 
 .fi-tabs-item {
-    border-radius: var(--tc-radius-sm);
-    font-weight: 600;
+    border-radius: var(--tc-radius-md);
+    font-weight: 700;
 }
 
 /* the other tabs do not react to the pointer: no background, no colour change */
@@ -404,8 +439,8 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-tabs-item.fi-active {
-    background-color: var(--tc-orange-500) !important;
-    box-shadow: none;
+    background: var(--tc-grad-orange) !important;
+    box-shadow: 0 4px 10px rgba(241, 136, 21, 0.3);
 }
 
 .fi-tabs-item.fi-active .fi-tabs-item-label,
@@ -414,29 +449,32 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-tabs-item.fi-active .fi-badge {
-    background-color: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
     color: var(--tc-orange-600) !important;
 }
 
-/* --- buttons ---------------------------------------------------------------------------- */
+/* --- buttons ------------------------------------------------------------------------------ */
 
 .fi-btn {
     border-radius: var(--tc-radius-sm);
-    font-weight: 600;
+    font-weight: 700;
 }
 
-/* one solid navy in every state, so hovering never shows another background for a frame */
+/* navy gradient over a solid navy base in every state, so hovering never shows another
+   background for a frame; the button rises a pixel under the pointer */
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label) {
     background-color: var(--tc-blue-600) !important;
-    background-image: none !important;
+    background-image: var(--tc-grad-blue) !important;
     color: #fff;
-    box-shadow: var(--tc-shadow-sm);
-    transition: background-color 0.15s ease;
+    box-shadow: var(--tc-btn);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label):hover,
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label):focus-visible {
     background-color: var(--tc-blue-700) !important;
+    box-shadow: var(--tc-btn-hover);
+    transform: translateY(-1px);
 }
 
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label) .fi-icon,
@@ -444,41 +482,44 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     color: #fff;
 }
 
-/* grey buttons (cancel, secondary): white with a hairline */
+/* grey buttons (cancel, secondary): white, lifted */
 .fi-btn.fi-color-gray:not(label) {
     background-color: var(--tc-surface);
-    border: 1px solid var(--tc-border-strong);
-    box-shadow: var(--tc-shadow-sm);
+    border: 0;
+    box-shadow: var(--tc-btn);
+    --tw-ring-color: transparent !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .fi-btn.fi-color-gray:not(label):hover {
-    background-color: var(--tc-surface-sunken);
+    box-shadow: var(--tc-btn-hover);
+    transform: translateY(-1px);
 }
 
-/* --- option buttons (ToggleButtons): white until chosen, orange when chosen ------------- */
+/* --- option buttons (ToggleButtons): white tiles until chosen, orange when chosen --------- */
 
 .fi-fo-toggle-buttons .fi-btn {
-    background-color: var(--tc-surface) !important;
+    background: var(--tc-surface) !important;
     color: var(--tc-ink) !important;
-    border: 1px solid var(--tc-border-strong);
-    box-shadow: none !important;
+    border: 0;
+    box-shadow: var(--tc-btn) !important;
     --tw-ring-color: transparent !important;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .fi-fo-toggle-buttons .fi-btn .fi-icon {
     color: var(--tc-muted) !important;
 }
 
-/* hover only sinks the white; no border colour appears */
+/* hover only lifts the tile; no border colour appears */
 .fi-fo-toggle-buttons .fi-btn:hover {
-    background-color: var(--tc-surface-sunken) !important;
+    box-shadow: var(--tc-btn-hover) !important;
 }
 
-/* the paired yes/no questions (grouped buttons): no frame around the pair; each button keeps
-   its own border like the other options, with a small gap between them */
+/* the paired yes/no questions (grouped buttons): no frame around the pair; each button is
+   its own tile, with a small gap between them */
 .fi-fo-toggle-buttons.fi-btn-group {
-    gap: 6px;
+    gap: 8px;
     box-shadow: none !important;
     --tw-ring-color: transparent !important;
     --tw-ring-shadow: 0 0 #0000 !important;
@@ -490,9 +531,9 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn {
-    background-color: var(--tc-orange-500) !important;
+    background: var(--tc-grad-orange) !important;
     color: #fff !important;
-    border-color: var(--tc-orange-500);
+    box-shadow: 0 4px 10px rgba(241, 136, 21, 0.32) !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn .fi-icon {
@@ -501,18 +542,18 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 /* answered / not, bought / not, and satisfaction keep their own meaning colours when chosen */
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-success {
-    background-color: #16a34a !important;
-    border-color: #16a34a;
+    background: var(--tc-grad-green) !important;
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.28) !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-danger {
-    background-color: #dc2626 !important;
-    border-color: #dc2626;
+    background: var(--tc-grad-red) !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.28) !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-gray {
-    background-color: #64748b !important;
-    border-color: #64748b;
+    background: var(--tc-grad-grey) !important;
+    box-shadow: 0 4px 10px rgba(91, 107, 133, 0.28) !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:focus-visible + .fi-btn {
@@ -520,24 +561,25 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     outline-offset: 2px;
 }
 
-/* --- inputs -------------------------------------------------------------------------------- */
+/* --- inputs ----------------------------------------------------------------------------------- */
 
 .fi-input-wrp {
     background-color: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border-strong);
+    border: 1px solid var(--tc-field-border);
     border-radius: var(--tc-radius-sm);
-    box-shadow: var(--tc-shadow-sm);
+    box-shadow: none;
     --tw-ring-color: transparent !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .fi-input-wrp:focus-within {
-    border-color: var(--tc-blue-600);
-    box-shadow: 0 0 0 3px var(--tc-blue-50);
+    border-color: var(--tc-blue-300);
+    box-shadow: 0 0 0 3px rgba(42, 91, 192, 0.18);
 }
 
 .fi-fo-field-wrp-label {
     color: var(--tc-ink);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .fi-fo-field-wrp-hint,
@@ -545,34 +587,38 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     color: var(--tc-muted);
 }
 
-/* --- pop-ups: dialogs and menus ---------------------------------------------------------- */
+/* --- pop-ups: dialogs and menus --------------------------------------------------------------- */
 
 .fi-modal-close-overlay {
-    background-color: rgba(11, 27, 56, 0.4) !important;
+    background-color: rgba(11, 27, 56, 0.35) !important;
 }
 
 .fi-modal-window {
     background-color: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border);
-    border-radius: var(--tc-radius-lg) !important;
-    box-shadow: var(--tc-shadow-xl) !important;
+    border: 0;
+    border-radius: var(--tc-radius-xl) !important;
+    box-shadow: var(--tc-soft-xl) !important;
     --tw-ring-color: transparent !important;
 }
 
 .fi-dropdown-panel {
     background-color: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border);
-    border-radius: var(--tc-radius-md) !important;
-    box-shadow: var(--tc-shadow-lg) !important;
+    border: 0;
+    border-radius: var(--tc-radius-lg) !important;
+    box-shadow: var(--tc-soft-lg), 0 0 0 1px var(--tc-hairline) !important;
     --tw-ring-color: transparent !important;
 }
 
 /* menu rows (the account menu, the row menus, the column list): a soft tint of their own
    colour under the pointer, never a flat white block */
+.fi-dropdown-list-item {
+    border-radius: var(--tc-radius-sm);
+}
+
 .fi-dropdown-list-item:not(.fi-disabled):not([disabled]):hover,
 .fi-dropdown-list-item:not(.fi-disabled):not([disabled]):focus-visible,
 .fi-dropdown-list-item:not(.fi-disabled):not([disabled]).fi-selected {
-    background-color: var(--tc-blue-50) !important;
+    background-color: var(--tc-sunken) !important;
 }
 
 .fi-dropdown-list-item.fi-color-danger:not(.fi-disabled):not([disabled]):hover,
@@ -582,10 +628,10 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 .fi-dropdown-list-item.fi-color-warning:not(.fi-disabled):not([disabled]):hover,
 .fi-dropdown-list-item.fi-color-warning:not(.fi-disabled):not([disabled]):focus-visible {
-    background-color: var(--tc-orange-50) !important;
+    background-color: #fff4e6 !important;
 }
 
-/* --- keyboard focus: one visible ring on everything you can tab to ------------------------ */
+/* --- keyboard focus: one visible ring on everything you can tab to -------------------------- */
 
 .fi-sidebar-item-btn:focus-visible,
 .fi-tabs-item:focus-visible,
@@ -596,11 +642,7 @@ a.fi-wi-stats-overview-stat:focus-visible,
     outline-offset: 2px;
 }
 
-.fi-sidebar .fi-sidebar-item-btn:focus-visible {
-    outline-color: #fff;
-}
-
-/* --- login page ----------------------------------------------------------------------------- */
+/* --- login page --------------------------------------------------------------------------------- */
 
 .fi-simple-layout {
     background-color: var(--tc-page);
@@ -608,15 +650,15 @@ a.fi-wi-stats-overview-stat:focus-visible,
 
 .fi-simple-main {
     background-color: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border);
-    border-radius: var(--tc-radius-lg) !important;
-    box-shadow: var(--tc-shadow-lg) !important;
+    border: 0;
+    border-radius: var(--tc-radius-xl) !important;
+    box-shadow: var(--tc-soft-lg) !important;
     --tw-ring-color: transparent !important;
 }
 
 .fi-simple-header .tc-brand__mark {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
 }
 
 .fi-simple-header .tc-brand__mark svg {
@@ -628,6 +670,10 @@ a.fi-wi-stats-overview-stat:focus-visible,
     font-size: 22px;
 }
 
+/* the heading in the brand gradient, the one place text gets it */
 .fi-simple-header-heading {
-    color: var(--tc-ink);
+    background: var(--tc-grad-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
