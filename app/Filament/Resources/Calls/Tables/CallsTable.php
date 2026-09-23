@@ -111,7 +111,8 @@ class CallsTable
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('follow_up_on')
+            // newest call on top; the columns are still sortable by hand
+            ->defaultSort('created_at', 'desc')
             ->filtersLayout(FiltersLayout::AboveContentCollapsible)
             ->filtersFormColumns(5)
             ->filters([
