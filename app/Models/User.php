@@ -10,6 +10,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -52,5 +53,25 @@ class User extends Authenticatable implements FilamentUser
     public function isManager(): bool
     {
         return $this->role === UserRole::Manager;
+    }
+
+    /** Calls this account took, and results it recorded. */
+    public function receivedCalls(): HasMany
+    {
+        return $this->hasMany(Call::class, 'received_by');
+    }
+
+    public function followUps(): HasMany
+    {
+        return $this->hasMany(FollowUp::class);
+    }
+
+    /**
+     * Anything in the reports carries this name. Such an account is switched off, never deleted, so
+     * the record of who took a call and who recorded its result stays readable.
+     */
+    public function hasHistory(): bool
+    {
+        return $this->receivedCalls()->withTrashed()->exists() || $this->followUps()->exists();
     }
 }

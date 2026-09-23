@@ -10,6 +10,7 @@ use App\Enums\UserRole;
 use App\Filament\Resources\Calls\Pages\CreateCall;
 use App\Filament\Resources\Calls\Pages\ListCalls;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
+use App\Filament\Resources\SalesAgents\Pages\ManageSalesAgents;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Widgets\AcquisitionSourceChart;
 use App\Filament\Widgets\ReportOverview;
@@ -295,36 +296,50 @@ class CallFollowUpTest extends TestCase
         $this->assertTrue($manager->is_active);
     }
 
-    public function test_a_user_is_deleted_for_good_but_never_the_last_manager_or_yourself(): void
+    public function test_an_account_with_no_records_is_deleted_and_one_with_records_is_only_switched_off(): void
     {
         Filament::setCurrentPanel('admin');
         $manager = User::create(['name' => 'مدیر', 'email' => 'boss2@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]);
         $this->actingAs($manager);
-        $secretary = $this->secretary();
+        $fresh = $this->secretary();
 
-        // the only manager and the signed-in user have no delete button
+        // the only manager and the signed-in account have no delete button at all
         Livewire::test(ManageUsers::class)
             ->assertTableActionHidden('delete', $manager)
-            ->assertTableActionVisible('delete', $secretary)
-            ->callTableAction('delete', $secretary);
+            ->assertTableActionEnabled('delete', $fresh)
+            ->callTableAction('delete', $fresh);
 
-        $this->assertNull(User::find($secretary->id), 'a deleted user is gone for good');
+        $this->assertNull(User::find($fresh->id), 'an account that recorded nothing is deleted for good');
 
-        // a second manager makes the first one deletable again
-        $other = User::create(['name' => 'مدیر دوم', 'email' => 'boss3@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]);
-        Livewire::test(ManageUsers::class)->assertTableActionVisible('delete', $other);
+        // one that recorded a result keeps its name: delete is out of reach, switching off is not
+        $worked = User::create(['name' => 'خانم حبیبی', 'email' => 'habibi@test.local', 'password' => 'secret123', 'role' => UserRole::Secretary]);
+        $this->makeCall()->recordFollowUp(['answered' => true, 'purchased' => true, 'agent_satisfaction' => 5, 'overall_satisfaction' => 5], $worked);
+
+        Livewire::test(ManageUsers::class)
+            ->assertTableActionDisabled('delete', $worked)
+            ->callTableAction('toggleActive', $worked);
+
+        $this->assertNotNull(User::find($worked->id));
+        $this->assertFalse($worked->fresh()->is_active);
     }
 
-    public function test_deleting_a_sales_agent_keeps_their_calls_without_an_agent(): void
+    public function test_a_sales_agent_with_calls_cannot_be_deleted_only_switched_off(): void
     {
-        $call = $this->makeCall();
-        $agent = $call->salesAgent;
+        Filament::setCurrentPanel('admin');
+        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'boss4@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
 
-        $agent->delete();
+        $referred = $this->makeCall()->salesAgent;
+        $unused = SalesAgent::create(['name' => 'اسم اشتباهی']);
 
-        $call->refresh();
-        $this->assertNull(SalesAgent::find($agent->id));
-        $this->assertNull($call->sales_agent_id, 'the call stays as the customer history, with no agent');
+        Livewire::test(ManageSalesAgents::class)
+            ->assertTableActionDisabled('delete', $referred)
+            ->assertTableActionEnabled('delete', $unused)
+            ->callTableAction('delete', $unused)
+            ->callTableAction('toggleActive', $referred);
+
+        $this->assertNull(SalesAgent::find($unused->id), 'an agent nobody was referred to is deleted');
+        $this->assertNotNull(SalesAgent::find($referred->id), 'an agent with calls keeps their figures');
+        $this->assertFalse($referred->fresh()->is_active);
     }
 
     public function test_secretaries_cannot_open_manager_pages(): void
