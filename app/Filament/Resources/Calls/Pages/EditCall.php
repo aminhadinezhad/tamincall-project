@@ -6,7 +6,6 @@ use App\Enums\CallStatus;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Filament\Resources\Calls\CallResource;
 use App\Models\Call;
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditCall extends EditRecord
@@ -15,14 +14,14 @@ class EditCall extends EditRecord
 
     public function getTitle(): string
     {
-        return 'تماس '.$this->getRecord()->customer->name;
+        return 'تماس '.($this->getRecord()->customer?->name ?? 'مشتری پاک شده');
     }
 
+    /** A call is never deleted on its own: it goes and comes back with its customer. */
     protected function getHeaderActions(): array
     {
         return [
             RecordFollowUpAction::make()->after(fn () => $this->refreshFormData(['status', 'follow_up_on'])),
-            DeleteAction::make(),
         ];
     }
 

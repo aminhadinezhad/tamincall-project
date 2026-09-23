@@ -17,6 +17,7 @@ use App\Models\Call;
 use App\Models\Customer;
 use App\Models\SalesAgent;
 use App\Models\User;
+use App\Support\Persian;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -253,6 +254,28 @@ class CallFollowUpTest extends TestCase
 
         $this->assertSame(1, Call::query()->count());
         $this->assertSame(1, Customer::query()->count());
+    }
+
+    public function test_searching_the_calls_by_customer_name_narrows_the_list(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+
+        $wanted = $this->makeCall();
+        $wanted->customer->update(['name' => 'بهرام کریمی']);
+        $other = $this->makeCall();
+        $other->customer->update(['name' => 'سعید نوری']);
+
+        Livewire::test(ListCalls::class, ['activeTab' => 'all'])
+            ->searchTable('بهرام')
+            ->assertCanSeeTableRecords([$wanted])
+            ->assertCanNotSeeTableRecords([$other]);
+
+        // a number still finds its call, whatever way it is typed
+        Livewire::test(ListCalls::class, ['activeTab' => 'all'])
+            ->searchTable(Persian::digits($wanted->customer->phone))
+            ->assertCanSeeTableRecords([$wanted])
+            ->assertCanNotSeeTableRecords([$other]);
     }
 
     public function test_a_manager_cannot_take_away_their_own_role(): void

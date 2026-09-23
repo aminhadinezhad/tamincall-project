@@ -38,9 +38,13 @@ class Call extends Model
         ];
     }
 
+    /**
+     * With the deleted ones too: a call whose customer is in the bin still has to know whose call it
+     * was, otherwise every page showing it would break on a missing name.
+     */
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class)->withTrashed();
     }
 
     public function salesAgent(): BelongsTo

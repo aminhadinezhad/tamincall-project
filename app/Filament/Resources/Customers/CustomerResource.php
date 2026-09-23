@@ -63,7 +63,7 @@ class CustomerResource extends Resource
             ->filters([
                 // one tick box: off, the deleted customers are hidden; on, only they are shown
                 Filter::make('trashed')
-                    ->label('پاک شده ها')
+                    ->label('مشتریان حذف شده')
                     ->baseQuery(fn (Builder $query): Builder => $query->withoutGlobalScopes([SoftDeletingScope::class]))
                     ->query(fn (Builder $query, array $data): Builder => ($data['isActive'] ?? false)
                         ? $query->onlyTrashed()
@@ -72,15 +72,10 @@ class CustomerResource extends Resource
             ])
             ->recordActions([
                 EditAction::make()->label('پرونده'),
-                // deleting a customer takes their calls and results with it, so the question says so
+                // the customer's calls go with them, and come back with them
                 DeleteAction::make()
-                    ->visible(fn (): bool => auth()->user()->isManager())
-                    ->modalDescription(fn (Customer $record): string => $record->calls()->count() > 0
-                        ? 'تمام تماس ها و نتیجه های این مشتری هم پاک می شوند و دیگر در گزارش ها دیده نمی شوند. اگر اشتباه شد، مدیر می تواند از فیلتر «پاک شده ها» برگرداند.'
-                        : 'این مشتری پاک می شود. اگر اشتباه شد، مدیر می تواند از فیلتر «پاک شده ها» برگرداند.'),
-                RestoreAction::make()
-                    ->label('برگرداندن')
-                    ->modalDescription('این مشتری و تماس هایش دوباره به لیست ها و گزارش ها برمی گردند.'),
+                    ->visible(fn (): bool => auth()->user()->isManager()),
+                RestoreAction::make()->label('برگرداندن'),
             ]);
     }
 

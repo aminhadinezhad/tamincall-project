@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class CallForm
 {
@@ -36,7 +37,8 @@ class CallForm
                     ->components([
                         Select::make('customer_id')
                             ->label('مشتری')
-                            ->relationship('customer', 'name')
+                            // newest first: the customer just added sits at the top of the list
+                            ->relationship('customer', 'name', fn (EloquentBuilder $query) => $query->orderByDesc('id'))
                             ->getOptionLabelFromRecordUsing(fn (Customer $record): string => $record->name.' - '.$record->phone)
                             ->searchable(['name', 'phone', 'company'])
                             ->preload()

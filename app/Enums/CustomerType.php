@@ -27,7 +27,10 @@ enum CustomerType: string implements HasColor, HasLabel
     /** The slice colour in the donut, and the source of the badge colour below. */
     public function chartColor(): string
     {
-        return ChartStyle::CATEGORICAL[array_search($this, self::cases(), true)];
+        return match ($this) {
+            self::Individual => ChartStyle::ORANGE,
+            self::Legal => ChartStyle::BLUE,
+        };
     }
 
     /** @return array<int, string> */

@@ -9,10 +9,7 @@ use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Models\Call;
 use App\Models\Customer;
 use App\Support\Persian;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -21,7 +18,6 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CallsTable
 {
@@ -47,14 +43,17 @@ class CallsTable
                 // the number sits under the name, so the row fits without a sideways scroll
                 TextColumn::make('customer.name')
                     ->label('مشتری')
-                    ->description(fn (Call $record): string => collect([Persian::digits($record->customer->phone), $record->customer->company])->filter()->join(' · '))
-                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereHas(
-                        'customer',
-                        fn (Builder $customer) => $customer
+                    ->description(fn (Call $record): string => collect([Persian::digits($record->customer?->phone), $record->customer?->company])->filter()->join(' · '))
+                    // a search with no digits in it must not fall through to "phone like %%",
+                    // which would match every row and look like the search doing nothing
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        $phone = Customer::normalizePhone($search);
+
+                        return $query->whereHas('customer', fn (Builder $customer) => $customer
                             ->where('name', 'like', "%{$search}%")
                             ->orWhere('company', 'like', "%{$search}%")
-                            ->orWhere('phone', 'like', '%'.Customer::normalizePhone($search).'%'),
-                    )),
+                            ->when($phone !== '', fn (Builder $c) => $c->orWhere('phone', 'like', "%{$phone}%")));
+                    }),
 
                 TextColumn::make('customer.phone')
                     ->label('شماره')
@@ -150,25 +149,11 @@ class CallsTable
                             ? $query->whereDate('created_at', today())
                             : $query->where('created_at', '>=', today()->subDays((int) $period)),
                     )),
-
-                // one tick box: off, the deleted calls are hidden; on, only they are shown, so a
-                // manager can bring one back
-                Filter::make('trashed')
-                    ->label('پاک شده ها')
-                    ->baseQuery(fn (Builder $query): Builder => $query->withoutGlobalScopes([SoftDeletingScope::class]))
-                    ->query(fn (Builder $query, array $data): Builder => ($data['isActive'] ?? false)
-                        ? $query->onlyTrashed()
-                        : $query->withoutTrashed())
-                    ->visible(fn (): bool => auth()->user()?->isManager() ?? false),
             ])
-            // the happy call stays a visible button; the rest fold into the row's menu
+            // a call is never deleted on its own: it goes and comes back with its customer
             ->recordActions([
                 RecordFollowUpAction::make(),
-                ActionGroup::make([
-                    EditAction::make()->label('جزئیات'),
-                    DeleteAction::make(),
-                    RestoreAction::make()->label('برگرداندن'),
-                ]),
+                EditAction::make()->label('جزئیات'),
             ])
             ->emptyStateHeading('تماسی نیست')
             ->emptyStateDescription(null);
