@@ -10,6 +10,7 @@ use App\Enums\UserRole;
 use App\Filament\Resources\Calls\Pages\CreateCall;
 use App\Filament\Resources\Calls\Pages\ListCalls;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
+use App\Filament\Resources\Customers\Pages\ListCustomers;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Widgets\AcquisitionSourceChart;
 use App\Filament\Widgets\ReportOverview;
@@ -254,6 +255,24 @@ class CallFollowUpTest extends TestCase
 
         $this->assertSame(1, Call::query()->count());
         $this->assertSame(1, Customer::query()->count());
+    }
+
+    public function test_the_customers_list_hides_deleted_customers_until_their_own_tab(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'bin@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
+
+        $kept = Customer::create(['name' => 'مریم حسینی', 'phone' => '09120001111']);
+        $deleted = Customer::create(['name' => 'رضا باقری', 'phone' => '09120002222']);
+        $deleted->delete();
+
+        Livewire::test(ListCustomers::class)
+            ->assertCanSeeTableRecords([$kept])
+            ->assertCanNotSeeTableRecords([$deleted]);
+
+        Livewire::test(ListCustomers::class, ['activeTab' => 'trashed'])
+            ->assertCanSeeTableRecords([$deleted])
+            ->assertCanNotSeeTableRecords([$kept]);
     }
 
     public function test_searching_the_calls_by_customer_name_narrows_the_list(): void

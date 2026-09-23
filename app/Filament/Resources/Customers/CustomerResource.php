@@ -18,7 +18,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -60,28 +59,21 @@ class CustomerResource extends Resource
                 TextColumn::make('created_at')->label('اولین تماس')->formatStateUsing(fn ($state): string => Persian::date($state))->sortable()->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([
-                // one tick box: off, the deleted customers are hidden; on, only they are shown
-                Filter::make('trashed')
-                    ->label('مشتریان حذف شده')
-                    ->baseQuery(fn (Builder $query): Builder => $query->withoutGlobalScopes([SoftDeletingScope::class]))
-                    ->query(fn (Builder $query, array $data): Builder => ($data['isActive'] ?? false)
-                        ? $query->onlyTrashed()
-                        : $query->withoutTrashed())
-                    ->visible(fn (): bool => auth()->user()->isManager()),
-            ])
+            // deleted customers live behind their own tab (see ListCustomers), not behind a filter
             ->recordActions([
                 EditAction::make()->label('پرونده'),
                 // the customer's calls go with them, and come back with them
                 DeleteAction::make()
-                    ->visible(fn (): bool => auth()->user()->isManager()),
-                RestoreAction::make()->label('برگرداندن'),
+                    ->visible(fn (Customer $record): bool => auth()->user()->isManager() && ! $record->trashed()),
+                RestoreAction::make()
+                    ->label('برگرداندن')
+                    ->visible(fn (Customer $record): bool => auth()->user()->isManager() && $record->trashed()),
             ]);
     }
 
     /**
-     * A manager can open a deleted customer's file, which is how they check it before bringing it
-     * back; the table's «مشتریان حذف شده» tick box decides what the list itself shows.
+     * A manager can reach a deleted customer: the «حذف شده ها» tab lists them and their file opens,
+     * which is how they check one before bringing it back. A secretary never sees them.
      */
     public static function getEloquentQuery(): Builder
     {
