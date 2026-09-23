@@ -52,11 +52,18 @@ class UserResource extends Resource
                 ->required(fn (string $operation): bool => $operation === 'create')
                 ->dehydrated(fn (?string $state): bool => filled($state))
                 ->helperText(fn (string $operation): ?string => $operation === 'edit' ? 'برای تغییر ندادن، خالی بگذارید.' : null),
-            Select::make('role')->label('نقش')->options(UserRole::class)->default(UserRole::Secretary)->required(),
+            // a manager cannot lock themselves out: neither by taking their own role away nor by
+            // switching their own account off. Another manager can still do both.
+            Select::make('role')
+                ->label('نقش')
+                ->options(UserRole::class)
+                ->default(UserRole::Secretary)
+                ->required()
+                ->disabled(fn (?User $record): bool => $record?->is(auth()->user()) ?? false)
+                ->helperText(fn (?User $record): ?string => $record?->is(auth()->user()) ? 'نقش خودتان را نمی توانید عوض کنید.' : null),
             Toggle::make('is_active')
                 ->label('فعال')
                 ->default(true)
-                // a manager cannot lock themselves out
                 ->disabled(fn (?User $record): bool => $record?->is(auth()->user()) ?? false),
         ]);
     }

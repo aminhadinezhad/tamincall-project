@@ -10,6 +10,7 @@ use App\Enums\UserRole;
 use App\Filament\Resources\Calls\Pages\CreateCall;
 use App\Filament\Resources\Calls\Pages\ListCalls;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
+use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Widgets\AcquisitionSourceChart;
 use App\Models\Call;
 use App\Models\Customer;
@@ -209,6 +210,23 @@ class CallFollowUpTest extends TestCase
         Livewire::test(AcquisitionSourceChart::class)
             ->assertSee('بیشترین نرخ خرید: معرف (۶۷٪ از مشتریان پیگیری شده)')
             ->assertSee('سایت · ۵۰٪', false);
+    }
+
+    public function test_a_manager_cannot_take_away_their_own_role(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $manager = User::create(['name' => 'مدیر', 'email' => 'boss@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]);
+        $this->actingAs($manager);
+
+        Livewire::test(ManageUsers::class)
+            ->mountTableAction('edit', $manager)
+            ->setTableActionData(['role' => UserRole::Secretary->value, 'is_active' => false])
+            ->callMountedTableAction()
+            ->assertHasNoTableActionErrors();
+
+        $manager->refresh();
+        $this->assertSame(UserRole::Manager, $manager->role, 'a manager must not be able to demote themselves');
+        $this->assertTrue($manager->is_active);
     }
 
     public function test_secretaries_cannot_open_manager_pages(): void

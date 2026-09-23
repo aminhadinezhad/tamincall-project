@@ -58,7 +58,12 @@ class CustomerResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->recordActions([
                 EditAction::make()->label('پرونده'),
-                DeleteAction::make()->visible(fn (): bool => auth()->user()->isManager()),
+                // deleting a customer takes their calls and results with it, so the question says so
+                DeleteAction::make()
+                    ->visible(fn (): bool => auth()->user()->isManager())
+                    ->modalDescription(fn (Customer $record): string => $record->calls()->count() > 0
+                        ? 'تمام تماس ها و نتیجه های این مشتری هم پاک می شوند و دیگر در گزارش ها دیده نمی شوند. این کار برگشت ندارد.'
+                        : 'این مشتری پاک می شود. این کار برگشت ندارد.'),
             ]);
     }
 
