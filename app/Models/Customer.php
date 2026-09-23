@@ -8,11 +8,27 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'phone', 'type', 'company', 'notes'])]
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    /**
+     * A deleted customer takes their calls out of the lists and the reports, and brings them back
+     * when the customer is restored.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (Customer $customer): void {
+            if (! $customer->isForceDeleting()) {
+                $customer->calls()->delete();
+            }
+        });
+
+        static::restored(fn (Customer $customer) => $customer->calls()->onlyTrashed()->restore());
+    }
 
     protected function casts(): array
     {

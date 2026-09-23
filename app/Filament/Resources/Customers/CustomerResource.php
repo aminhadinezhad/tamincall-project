@@ -13,12 +13,16 @@ use App\Support\Persian;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
 class CustomerResource extends Resource
@@ -56,15 +60,37 @@ class CustomerResource extends Resource
                 TextColumn::make('created_at')->label('اولین تماس')->formatStateUsing(fn ($state): string => Persian::date($state))->sortable()->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->filters([
+                // deleted customers are hidden everywhere; a manager can look at them here
+                TrashedFilter::make()
+                    ->label('پاک شده ها')
+                    ->visible(fn (): bool => auth()->user()->isManager()),
+            ])
             ->recordActions([
                 EditAction::make()->label('پرونده'),
                 // deleting a customer takes their calls and results with it, so the question says so
                 DeleteAction::make()
                     ->visible(fn (): bool => auth()->user()->isManager())
                     ->modalDescription(fn (Customer $record): string => $record->calls()->count() > 0
-                        ? 'تمام تماس ها و نتیجه های این مشتری هم پاک می شوند و دیگر در گزارش ها دیده نمی شوند.'
-                        : 'این مشتری پاک می شود.'),
+                        ? 'تمام تماس ها و نتیجه های این مشتری هم پاک می شوند و دیگر در گزارش ها دیده نمی شوند. اگر اشتباه شد، مدیر می تواند از فیلتر «پاک شده ها» برگرداند.'
+                        : 'این مشتری پاک می شود. اگر اشتباه شد، مدیر می تواند از فیلتر «پاک شده ها» برگرداند.'),
+                RestoreAction::make()
+                    ->label('برگرداندن')
+                    ->modalDescription('این مشتری و تماس هایش دوباره به لیست ها و گزارش ها برمی گردند.'),
             ]);
+    }
+
+    /**
+     * A manager's table can reach deleted customers, so its «پاک شده ها» filter has something to
+     * show; for everyone else they stay out of reach.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        return auth()->user()?->isManager()
+            ? $query->withoutGlobalScopes([SoftDeletingScope::class])
+            : $query;
     }
 
     public static function getRelations(): array

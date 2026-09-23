@@ -12,12 +12,14 @@ use App\Support\Persian;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -148,6 +150,11 @@ class CallsTable
                             ? $query->whereDate('created_at', today())
                             : $query->where('created_at', '>=', today()->subDays((int) $period)),
                     )),
+
+                // deleted calls are hidden everywhere; a manager can look at them here and bring one back
+                TrashedFilter::make()
+                    ->label('پاک شده ها')
+                    ->visible(fn (): bool => auth()->user()?->isManager() ?? false),
             ])
             // the happy call stays a visible button; the rest fold into the row's menu
             ->recordActions([
@@ -155,6 +162,7 @@ class CallsTable
                 ActionGroup::make([
                     EditAction::make()->label('جزئیات'),
                     DeleteAction::make(),
+                    RestoreAction::make()->label('برگرداندن'),
                 ]),
             ])
             ->emptyStateHeading('تماسی نیست')

@@ -12,6 +12,7 @@ use App\Filament\Resources\Calls\Pages\ListCalls;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Widgets\AcquisitionSourceChart;
+use App\Filament\Widgets\ReportOverview;
 use App\Models\Call;
 use App\Models\Customer;
 use App\Models\SalesAgent;
@@ -210,6 +211,48 @@ class CallFollowUpTest extends TestCase
         Livewire::test(AcquisitionSourceChart::class)
             ->assertSee('بیشترین نرخ خرید: معرف (۶۷٪ از مشتریان پیگیری شده)')
             ->assertSee('سایت · ۵۰٪', false);
+    }
+
+    public function test_a_deleted_call_leaves_the_reports_but_can_be_brought_back(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'reports@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
+
+        $kept = $this->makeCall();
+        $kept->recordFollowUp(['answered' => true, 'purchased' => true, 'agent_satisfaction' => 5, 'overall_satisfaction' => 5]);
+        $deleted = $this->makeCall();
+        $deleted->recordFollowUp(['answered' => true, 'purchased' => true, 'agent_satisfaction' => 5, 'overall_satisfaction' => 5]);
+
+        Livewire::test(ReportOverview::class)->assertSee('۲ خرید از ۲ مشتری پیگیری شده', false);
+
+        $deleted->delete();
+
+        // gone from the lists and from the figures, still in the database
+        $this->assertSame(1, Call::query()->count());
+        $this->assertSame(2, Call::withTrashed()->count());
+        Livewire::test(ReportOverview::class)->assertSee('۱ خرید از ۱ مشتری پیگیری شده', false);
+
+        $deleted->restore();
+
+        $this->assertSame(2, Call::query()->count());
+        Livewire::test(ReportOverview::class)->assertSee('۲ خرید از ۲ مشتری پیگیری شده', false);
+    }
+
+    public function test_deleting_a_customer_hides_their_calls_and_restoring_brings_them_back(): void
+    {
+        $call = $this->makeCall();
+        $customer = $call->customer;
+
+        $customer->delete();
+
+        $this->assertSame(0, Call::query()->count());
+        $this->assertSame(0, Customer::query()->count());
+        $this->assertNotNull(Call::withTrashed()->find($call->id)->deleted_at);
+
+        $customer->restore();
+
+        $this->assertSame(1, Call::query()->count());
+        $this->assertSame(1, Customer::query()->count());
     }
 
     public function test_a_manager_cannot_take_away_their_own_role(): void

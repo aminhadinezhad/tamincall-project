@@ -159,10 +159,10 @@ return [
     ],
     'trashed' => 
     [
-      'label' => 'رکوردهای حذف  شده',
-      'only_trashed' => 'فقط رکوردهای حذف  شده',
-      'with_trashed' => 'به همراه رکوردهای حذف  شده',
-      'without_trashed' => 'بدون رکوردهای حذف  شده',
+      'label' => 'پاک شده ها',
+      'only_trashed' => 'فقط پاک شده ها',
+      'with_trashed' => 'همه، با پاک شده ها',
+      'without_trashed' => 'بدون پاک شده ها',
     ],
   ],
   'grouping' => 
