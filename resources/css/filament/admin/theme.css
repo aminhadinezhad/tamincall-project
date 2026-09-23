@@ -28,19 +28,19 @@
     --tc-muted: #56668a;
 
     /* materials, thin → thick */
-    --tc-mat-thin: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.42));
-    --tc-mat-regular: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.6) 100%);
-    --tc-mat-thick: linear-gradient(135deg, rgba(255, 255, 255, 0.93) 0%, rgba(255, 255, 255, 0.86) 100%);
+    --tc-mat-thin: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.5));
+    --tc-mat-regular: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.72) 100%);
+    --tc-mat-thick: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.9) 100%);
     --tc-blur: blur(24px) saturate(170%);
 
     /* edges: light on the top-left rim, a faint outline so a card never melts into the page */
     --tc-rim: rgba(255, 255, 255, 0.85);
     --tc-edge-light: inset 1px 1px 0 rgba(255, 255, 255, 0.9), inset -1px -1px 0 rgba(255, 255, 255, 0.35);
-    --tc-outline: 0 0 0 1px rgba(22, 65, 148, 0.06);
+    --tc-outline: 0 0 0 1px rgba(22, 65, 148, 0.1);
 
     /* elevation: 1 resting cards, 2 hovered or raised, 3 dialogs and menus */
-    --tc-elev-1: 0 1px 2px rgba(9, 26, 59, 0.04), 0 8px 24px rgba(22, 65, 148, 0.08);
-    --tc-elev-2: 0 2px 6px rgba(9, 26, 59, 0.06), 0 16px 40px rgba(22, 65, 148, 0.15);
+    --tc-elev-1: 0 1px 2px rgba(9, 26, 59, 0.03), 0 8px 24px rgba(22, 65, 148, 0.06);
+    --tc-elev-2: 0 2px 6px rgba(9, 26, 59, 0.05), 0 16px 40px rgba(22, 65, 148, 0.12);
     --tc-elev-3: 0 6px 16px rgba(9, 26, 59, 0.08), 0 28px 70px rgba(9, 26, 59, 0.22);
 
     /* radius scale */
@@ -61,7 +61,7 @@
 
 .fi-body {
     min-height: 100dvh;
-    background-color: #eaf0f9;
+    background-color: #f7f9fc;
     color: var(--tc-blue-800);
 }
 
@@ -72,15 +72,13 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    /* soft but not flat: faint glows spread behind the content (not only in the corners), so the
-       glass always has a little colour to blur while the page as a whole stays pale */
+    /* near white: only a breath of blue, so the glass has something to blur without the page
+       ever looking coloured or busy. The warm note is a single, very faint low glow. */
     background:
-        radial-gradient(32rem 32rem at 88% 12%, rgba(22, 65, 148, 0.18), transparent 70%),
-        radial-gradient(26rem 26rem at 30% 28%, rgba(86, 152, 231, 0.12), transparent 70%),
-        radial-gradient(28rem 28rem at 62% 62%, rgba(115, 141, 191, 0.14), transparent 70%),
-        radial-gradient(24rem 24rem at 14% 78%, rgba(241, 136, 21, 0.12), transparent 70%),
-        radial-gradient(22rem 22rem at 80% 92%, rgba(241, 136, 21, 0.07), transparent 70%),
-        linear-gradient(160deg, #f4f7fb 0%, #eaf0f8 100%);
+        radial-gradient(38rem 38rem at 88% 8%, rgba(22, 65, 148, 0.07), transparent 72%),
+        radial-gradient(34rem 34rem at 22% 34%, rgba(86, 152, 231, 0.05), transparent 72%),
+        radial-gradient(30rem 30rem at 70% 78%, rgba(241, 136, 21, 0.035), transparent 72%),
+        linear-gradient(165deg, #fbfcfe 0%, #f3f6fb 100%);
 }
 
 .fi-layout,
@@ -382,7 +380,7 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 /* --- tables -------------------------------------------------------------------------------------- */
 
 .fi-ta-table > thead > tr > th {
-    background: rgba(241, 245, 250, 0.6);
+    background: rgba(244, 247, 251, 0.75);
 }
 
 .fi-ta-header-cell-label {
