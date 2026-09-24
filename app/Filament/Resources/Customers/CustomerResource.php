@@ -62,10 +62,9 @@ class CustomerResource extends Resource
             // deleted customers live behind their own tab (see ListCustomers), not behind a filter
             ->recordActions([
                 EditAction::make()->label('پرونده'),
-                // anyone can delete a customer (their calls go with them); only a manager sees the
-                // deleted ones and can bring them back, so nothing a secretary deletes is lost
+                // the customer's calls go with them, and come back with them
                 DeleteAction::make()
-                    ->visible(fn (Customer $record): bool => ! $record->trashed()),
+                    ->visible(fn (Customer $record): bool => auth()->user()->isManager() && ! $record->trashed()),
                 RestoreAction::make()
                     ->label('برگرداندن')
                     ->visible(fn (Customer $record): bool => auth()->user()->isManager() && $record->trashed()),

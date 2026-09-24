@@ -18,7 +18,7 @@ class EditCustomer extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make()->visible(fn (): bool => ! $this->getRecord()->trashed()),
+            DeleteAction::make()->visible(fn (): bool => auth()->user()->isManager()),
         ];
     }
 }
