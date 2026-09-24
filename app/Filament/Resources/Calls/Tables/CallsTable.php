@@ -173,8 +173,9 @@ class CallsTable
                     ->label('ثبت تماس جدید')
                     ->icon(Heroicon::Plus)
                     ->url(fn (): string => CallResource::getUrl('create'))
+                    // only when there are no calls at all; an empty «پیگیری امروز» is good news, not a to-do
                     ->visible(fn (HasTable $livewire): bool => blank($livewire->getTableSearch())
-                        && in_array($livewire->activeTab ?? null, ['today', 'all', null], true)),
+                        && in_array($livewire->activeTab ?? null, ['all', null], true)),
             ]);
     }
 
