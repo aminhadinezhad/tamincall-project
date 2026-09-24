@@ -76,8 +76,27 @@ class CallResource extends Resource
         return 'پیگیری های امروز';
     }
 
+    /**
+     * A call is never deleted on its own, by anyone: it goes and comes back with its customer.
+     * Checked here as well as by the missing button, so no request can do it either.
+     */
     public static function canDelete($record): bool
     {
-        return auth()->user()?->isManager() ?? false;
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
+
+    public static function canForceDelete($record): bool
+    {
+        return false;
+    }
+
+    public static function canRestore($record): bool
+    {
+        return false;
     }
 }

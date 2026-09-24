@@ -110,6 +110,40 @@ class CustomerResource extends Resource
             : $query;
     }
 
+    /**
+     * Deleting and restoring customers is a manager's job. Checked here as well as on the buttons,
+     * so no request can do it either; nothing is ever deleted for good.
+     */
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->isManager() ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()?->isManager() ?? false;
+    }
+
+    public static function canRestore($record): bool
+    {
+        return auth()->user()?->isManager() ?? false;
+    }
+
+    public static function canRestoreAny(): bool
+    {
+        return auth()->user()?->isManager() ?? false;
+    }
+
+    public static function canForceDelete($record): bool
+    {
+        return false;
+    }
+
+    public static function canForceDeleteAny(): bool
+    {
+        return false;
+    }
+
     public static function getRelations(): array
     {
         return [

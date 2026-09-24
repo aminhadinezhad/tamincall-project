@@ -39,6 +39,17 @@ class UserResource extends Resource
         return auth()->user()?->isManager() ?? false;
     }
 
+    /** Accounts are switched off, never deleted, so the calls they recorded keep their name. */
+    public static function canDelete($record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

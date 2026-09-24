@@ -2,24 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * Seeds nothing on purpose. Laravel's stock seeder created a "Test User" with the password
+ * "password", which would be a way into the live panel if db:seed were ever run on the server.
+ *
+ * The first manager is created with: php artisan tamin:manager
+ * Local demo data (local only):       php artisan db:seed --class=DemoSeeder
+ */
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        //
     }
 }

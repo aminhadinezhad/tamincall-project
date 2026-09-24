@@ -7,11 +7,15 @@ use App\Enums\CallStatus;
 use App\Enums\CustomerType;
 use App\Enums\NoPurchaseReason;
 use App\Enums\UserRole;
+use App\Filament\Resources\Calls\CallResource;
 use App\Filament\Resources\Calls\Pages\CreateCall;
 use App\Filament\Resources\Calls\Pages\ListCalls;
+use App\Filament\Resources\Customers\CustomerResource;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
 use App\Filament\Resources\Customers\Pages\ListCustomers;
+use App\Filament\Resources\SalesAgents\SalesAgentResource;
 use App\Filament\Resources\Users\Pages\ManageUsers;
+use App\Filament\Resources\Users\UserResource;
 use App\Filament\Widgets\AcquisitionSourceChart;
 use App\Filament\Widgets\ReportOverview;
 use App\Models\Call;
@@ -194,6 +198,36 @@ class CallFollowUpTest extends TestCase
         $this->assertSame('از طرف آقای رحیمی', $call->notes);
     }
 
+    public function test_a_new_customer_can_be_added_from_inside_the_call_form(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+        $agent = SalesAgent::create(['name' => 'خانم کریمی']);
+
+        $page = Livewire::test(CreateCall::class)
+            ->callFormComponentAction('customer_id', 'createOption', data: [
+                'name' => 'پرویز نادری',
+                'phone' => '۰۹۱۲ ۸۸۸ ۰۰۰۰',
+                'type' => CustomerType::Individual->value,
+            ])
+            ->assertHasNoFormComponentActionErrors();
+
+        $customer = Customer::where('phone', '09128880000')->sole();
+        $page->assertFormSet(['customer_id' => $customer->id]);
+
+        $page->fillForm(['sales_agent_id' => $agent->id, 'request' => 'دستمال کاغذی', 'source' => AcquisitionSource::Website->value, 'follow_up_in' => 1])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame($customer->id, Call::sole()->customer_id);
+        $this->assertSame(auth()->id(), Call::sole()->received_by);
+
+        // the same number cannot be added twice
+        Livewire::test(CreateCall::class)
+            ->callFormComponentAction('customer_id', 'createOption', data: ['name' => 'دوباره', 'phone' => '09128880000', 'type' => CustomerType::Individual->value])
+            ->assertHasFormComponentActionErrors(['phone']);
+    }
+
     public function test_a_legal_customer_needs_a_company_name(): void
     {
         Filament::setCurrentPanel('admin');
@@ -351,6 +385,52 @@ class CallFollowUpTest extends TestCase
         $manager->refresh();
         $this->assertSame(UserRole::Manager, $manager->role, 'a manager must not be able to demote themselves');
         $this->assertTrue($manager->is_active);
+    }
+
+    public function test_deleting_and_restoring_are_refused_on_the_server_not_only_hidden(): void
+    {
+        $customer = $this->makeCall()->customer;
+
+        $this->actingAs($this->secretary());
+        $this->assertFalse(CustomerResource::canDelete($customer));
+        $this->assertFalse(CustomerResource::canRestore($customer));
+        $this->assertFalse(CallResource::canDelete($customer->calls()->first()));
+
+        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'rules@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
+        $this->assertTrue(CustomerResource::canDelete($customer));
+        $this->assertFalse(CustomerResource::canForceDelete($customer), 'nothing is deleted for good');
+        $this->assertFalse(CallResource::canDelete($customer->calls()->first()));
+        $this->assertFalse(UserResource::canDelete(auth()->user()));
+        $this->assertFalse(SalesAgentResource::canDelete($customer->calls()->first()->salesAgent), 'an agent with calls stays');
+    }
+
+    public function test_the_manager_command_creates_the_first_sign_in_and_rejects_bad_input(): void
+    {
+        $this->artisan('tamin:manager')
+            ->expectsQuestion('نام', 'مدیر فروش')
+            ->expectsQuestion('ایمیل (برای ورود)', 'boss@taminfalat.test')
+            ->expectsQuestion('رمز عبور (حداقل ۸ نویسه)', 'a-strong-pass')
+            ->assertSuccessful();
+
+        $manager = User::where('email', 'boss@taminfalat.test')->sole();
+        $this->assertTrue($manager->isManager());
+        $this->assertTrue($manager->is_active);
+        $this->assertNotSame('a-strong-pass', $manager->password, 'the password is stored hashed');
+
+        $this->artisan('tamin:manager')
+            ->expectsQuestion('نام', 'دوباره')
+            ->expectsQuestion('ایمیل (برای ورود)', 'boss@taminfalat.test')
+            ->expectsQuestion('رمز عبور (حداقل ۸ نویسه)', 'short')
+            ->assertFailed();
+
+        $this->assertSame(1, User::count());
+    }
+
+    public function test_seeding_the_server_creates_no_account(): void
+    {
+        $this->seed();
+
+        $this->assertSame(0, User::count());
     }
 
     public function test_secretaries_cannot_open_manager_pages(): void
