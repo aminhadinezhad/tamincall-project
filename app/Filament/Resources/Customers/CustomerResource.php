@@ -10,7 +10,6 @@ use App\Filament\Resources\Customers\RelationManagers\CallsRelationManager;
 use App\Models\Customer;
 use App\Support\Persian;
 use BackedEnum;
-use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
@@ -85,16 +84,8 @@ class CustomerResource extends Resource
             ->emptyStateDescription(fn (HasTable $livewire): string => match (true) {
                 filled($livewire->getTableSearch()) => 'با نام، شرکت یا شماره ی دیگری جستجو کنید.',
                 ($livewire->activeTab ?? null) === 'trashed' => 'مشتریانی که حذف شوند اینجا می آیند و می شود برشان گرداند.',
-                default => 'مشتری ها با ثبت اولین تماسشان اینجا می آیند، یا از همین جا اضافه شان کنید.',
-            })
-            ->emptyStateActions([
-                Action::make('createFromEmpty')
-                    ->label('مشتری جدید')
-                    ->icon(Heroicon::Plus)
-                    ->url(fn (): string => static::getUrl('create'))
-                    ->visible(fn (HasTable $livewire): bool => blank($livewire->getTableSearch())
-                        && ($livewire->activeTab ?? null) !== 'trashed'),
-            ]);
+                default => 'مشتری ها با ثبت اولین تماسشان اینجا می آیند، یا با دکمه ی «مشتری جدید» بالای صفحه.',
+            });
     }
 
     /**

@@ -6,11 +6,9 @@ use App\Enums\AcquisitionSource;
 use App\Enums\CallStatus;
 use App\Enums\CustomerType;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
-use App\Filament\Resources\Calls\CallResource;
 use App\Models\Call;
 use App\Models\Customer;
 use App\Support\Persian;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Support\Enums\Width;
@@ -167,16 +165,7 @@ class CallsTable
             // an empty list says why it is empty and what to do next, tab by tab
             ->emptyStateIcon(fn (HasTable $livewire): Heroicon => self::emptyState($livewire)[0])
             ->emptyStateHeading(fn (HasTable $livewire): string => self::emptyState($livewire)[1])
-            ->emptyStateDescription(fn (HasTable $livewire): string => self::emptyState($livewire)[2])
-            ->emptyStateActions([
-                Action::make('createFromEmpty')
-                    ->label('ثبت تماس جدید')
-                    ->icon(Heroicon::Plus)
-                    ->url(fn (): string => CallResource::getUrl('create'))
-                    // only when there are no calls at all; an empty «پیگیری امروز» is good news, not a to-do
-                    ->visible(fn (HasTable $livewire): bool => blank($livewire->getTableSearch())
-                        && in_array($livewire->activeTab ?? null, ['all', null], true)),
-            ]);
+            ->emptyStateDescription(fn (HasTable $livewire): string => self::emptyState($livewire)[2]);
     }
 
     /**

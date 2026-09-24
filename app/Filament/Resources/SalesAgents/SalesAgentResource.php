@@ -6,7 +6,6 @@ use App\Filament\Resources\SalesAgents\Pages\ManageSalesAgents;
 use App\Models\SalesAgent;
 use App\Support\Persian;
 use BackedEnum;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
@@ -79,10 +78,7 @@ class SalesAgentResource extends Resource
             // an empty list says what to do next
             ->emptyStateIcon(Heroicon::OutlinedBriefcase)
             ->emptyStateHeading('هنوز کارشناسی ثبت نشده')
-            ->emptyStateDescription('کارشناسان فروش را اضافه کنید تا تماس ها به آن ها ارجاع شود.')
-            ->emptyStateActions([
-                CreateAction::make()->label('کارشناس جدید')->icon(Heroicon::Plus),
-            ]);
+            ->emptyStateDescription('با دکمه ی «کارشناس جدید» بالای صفحه کارشناسان را اضافه کنید تا تماس ها به آن ها ارجاع شود.');
     }
 
     public static function getPages(): array
