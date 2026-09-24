@@ -5,6 +5,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
+# composer runs as root here on purpose, as for sabad; this stops it asking every time
+export COMPOSER_ALLOW_SUPERUSER=1
+
 BACKUP_DIR=/root/tamincall-backup
 BACKUP_FILE="$BACKUP_DIR/database-latest.sqlite"
 mkdir -p "$BACKUP_DIR"
@@ -24,6 +27,6 @@ php artisan migrate --force
 php artisan config:clear
 php artisan view:clear
 
-# everything the app writes belongs to the web server, including files root just created
-chown -R www-data:www-data storage bootstrap/cache database
+# the whole folder belongs to the web server, as sabad does, including files root just created
+chown -R www-data:www-data "$(pwd)"
 echo "Done."
