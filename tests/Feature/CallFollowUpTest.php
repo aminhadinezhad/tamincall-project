@@ -198,6 +198,28 @@ class CallFollowUpTest extends TestCase
         $this->assertSame('از طرف آقای رحیمی', $call->notes);
     }
 
+    public function test_only_a_legal_customer_has_a_company(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+
+        // a person: the field is not shown, and a company sent anyway is not kept
+        Livewire::test(CreateCustomer::class)
+            ->fillForm(['type' => CustomerType::Individual->value])
+            ->assertFormFieldIsHidden('company')
+            ->fillForm(['type' => CustomerType::Legal->value])
+            ->assertFormFieldIsVisible('company');
+
+        $person = Customer::create(['name' => 'سارا نیکو', 'phone' => '09121110000', 'type' => CustomerType::Individual, 'company' => 'شرکت الف']);
+        $this->assertNull($person->fresh()->company);
+
+        // a company turned into a person loses its company name
+        $firm = Customer::create(['name' => 'علی راد', 'phone' => '09122220000', 'type' => CustomerType::Legal, 'company' => 'شرکت ب']);
+        $this->assertSame('شرکت ب', $firm->fresh()->company);
+        $firm->update(['type' => CustomerType::Individual]);
+        $this->assertNull($firm->fresh()->company);
+    }
+
     public function test_a_new_customer_can_be_added_from_inside_the_call_form(): void
     {
         Filament::setCurrentPanel('admin');

@@ -21,6 +21,14 @@ class Customer extends Model
      */
     protected static function booted(): void
     {
+        // only a legal customer is a company or organisation; a person never keeps one, however
+        // they are saved
+        static::saving(function (Customer $customer): void {
+            if ($customer->type !== CustomerType::Legal) {
+                $customer->company = null;
+            }
+        });
+
         static::deleted(function (Customer $customer): void {
             if (! $customer->isForceDeleting()) {
                 $customer->calls()->delete();

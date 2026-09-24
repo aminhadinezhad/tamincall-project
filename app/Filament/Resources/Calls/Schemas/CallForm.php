@@ -14,6 +14,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
@@ -135,17 +136,29 @@ class CallForm
                 ->options(CustomerType::class)
                 ->inline()
                 ->required()
-                ->live(),
+                ->live()
+                // switching to «حقیقی» empties the company, so nothing is left behind in the hidden field
+                ->afterStateUpdated(function ($state, Set $set): void {
+                    if (! self::isLegal($state)) {
+                        $set('company', null);
+                    }
+                }),
 
-            // a legal customer is a company or organisation, so its name is needed
+            // only a legal customer is a company or organisation, so only it has (and needs) one
             TextInput::make('company')
                 ->label('شرکت / سازمان')
-                ->required(fn (Get $get): bool => $get('type') === CustomerType::Legal || $get('type') === CustomerType::Legal->value)
+                ->visible(fn (Get $get): bool => self::isLegal($get('type')))
+                ->required(fn (Get $get): bool => self::isLegal($get('type')))
                 ->maxLength(255),
 
             Textarea::make('notes')
                 ->label('توضیحات')
                 ->rows(2),
         ];
+    }
+
+    private static function isLegal(mixed $type): bool
+    {
+        return $type === CustomerType::Legal || $type === CustomerType::Legal->value;
     }
 }
