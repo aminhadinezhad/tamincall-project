@@ -15,8 +15,8 @@
                 is chosen (the active tab, the chosen option, the page you are
                 on); green and red only mean yes and no.
    Structure    white canvas; content sits in boxes with a hairline border and a
-                light grey header strip (GitHub's Box); the top bar is the same
-                light grey; no shadow on anything that sits on the page.
+                light blue header strip (GitHub's Box); the top bar is brand blue
+                with an orange line; no shadow on anything that sits on the page.
    Shape        6px for boxes and controls, 12px for what floats (menus, dialogs).
    Focus        one blue ring, the same everywhere.
 
@@ -30,6 +30,7 @@
     --tc-blue-600: #164194;
     --tc-blue-100: #dce5f5;
     --tc-blue-50: #eef3fb;
+    --tc-blue-25: #f5f8fd;
 
     /* brand: complementary. #f18815 is a fill colour; as text it needs the 700 step (4.6:1) */
     --tc-orange-700: #b3600a;
@@ -100,6 +101,16 @@
     letter-spacing: 0;
 }
 
+.fi-header-heading::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background-color: var(--tc-orange-500);
+}
+
 .fi-header-subheading {
     color: var(--tc-muted);
 }
@@ -137,7 +148,7 @@
 
 /* the header strip (GitHub's Box-header) */
 .fi-section:not(.fi-section .fi-section) > .fi-section-header {
-    background-color: var(--tc-canvas-subtle);
+    background-color: var(--tc-blue-25);
     border-bottom: 1px solid var(--tc-border);
     border-start-start-radius: calc(var(--tc-radius) - 1px);
     border-start-end-radius: calc(var(--tc-radius) - 1px);
@@ -204,34 +215,66 @@
 }
 
 /* ==========================================================================
-   Top bar: light grey, a hairline under it
+   Top bar: brand blue, an orange line under it
    ========================================================================== */
 
 .fi-topbar {
-    background-color: var(--tc-canvas-subtle) !important;
-    border-bottom: 1px solid var(--tc-border) !important;
+    background-color: var(--tc-blue-600) !important;
+    border-bottom: 2px solid var(--tc-orange-500) !important;
     box-shadow: none !important;
+}
+
+.fi-topbar .tc-brand__text {
+    color: #fff;
+}
+
+.fi-topbar .tc-brand__mark {
+    box-shadow: none;
 }
 
 .fi-topbar .fi-icon-btn,
 .fi-topbar .fi-icon-btn .fi-icon {
-    color: var(--tc-muted);
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .fi-topbar .fi-icon-btn:hover {
-    background-color: var(--tc-hover);
-    color: var(--tc-ink);
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
 .fi-topbar .fi-global-search-field .fi-input-wrp {
-    background-color: var(--tc-canvas) !important;
-    border: 1px solid var(--tc-border-strong) !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
     box-shadow: none !important;
+}
+
+.fi-topbar .fi-global-search-field .fi-input {
+    color: #fff;
 }
 
 .fi-topbar .fi-global-search-field .fi-input::placeholder,
 .fi-topbar .fi-global-search-field .fi-icon {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+/* once you type, the field turns white so the text is easy to read */
+.fi-topbar .fi-global-search-field .fi-input-wrp:focus-within {
+    background-color: #fff !important;
+    border-color: #fff !important;
+}
+
+.fi-topbar .fi-global-search-field .fi-input-wrp:focus-within .fi-input {
+    color: var(--tc-ink);
+}
+
+.fi-topbar .fi-global-search-field .fi-input-wrp:focus-within .fi-icon,
+.fi-topbar .fi-global-search-field .fi-input-wrp:focus-within .fi-input::placeholder {
     color: var(--tc-muted);
+}
+
+/* the account avatar keeps a white ring on the blue */
+.fi-topbar .fi-avatar {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
 }
 
 /* ==========================================================================
@@ -253,9 +296,13 @@
 }
 
 .fi-sidebar-header {
-    background-color: var(--tc-canvas-subtle) !important;
-    border-color: var(--tc-border) !important;
+    background-color: var(--tc-blue-600) !important;
+    border-color: var(--tc-orange-500) !important;
     box-shadow: none !important;
+}
+
+.fi-sidebar-header .tc-brand__text {
+    color: #fff;
 }
 
 .fi-sidebar-nav {
@@ -282,7 +329,7 @@
 }
 
 .fi-sidebar-item-btn > .fi-icon {
-    color: var(--tc-grey-600);
+    color: var(--tc-blue-600);
 }
 
 .fi-sidebar-item-label {
@@ -303,7 +350,7 @@
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:hover,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:focus-visible {
-    background-color: var(--tc-hover) !important;
+    background-color: var(--tc-blue-50) !important;
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn::after {
@@ -321,7 +368,7 @@
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
-    color: var(--tc-ink);
+    color: var(--tc-blue-600);
     font-weight: 700;
 }
 
@@ -340,6 +387,20 @@
 
 .fi-wi-stats-overview-stat {
     position: relative;
+    overflow: hidden;
+}
+
+.fi-wi-stats-overview-stat::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 3px;
+    background-color: var(--tc-blue-600);
+}
+
+a.fi-wi-stats-overview-stat::before {
+    background-color: var(--tc-orange-500);
 }
 
 .fi-wi-stats-overview-stat-label {
@@ -395,7 +456,7 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 .fi-ta-table > thead > tr > th,
 .fi-ta-header-cell {
-    background-color: var(--tc-canvas-subtle) !important;
+    background-color: var(--tc-blue-25) !important;
 }
 
 .fi-ta-header-cell-label {
@@ -410,7 +471,7 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-ta-row:hover {
-    background-color: var(--tc-canvas-subtle);
+    background-color: var(--tc-blue-25);
 }
 
 .fi-ta-table > tbody,
@@ -485,7 +546,7 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-tabs-item.fi-active .fi-tabs-item-label {
-    color: var(--tc-ink) !important;
+    color: var(--tc-blue-600) !important;
     font-weight: 700;
 }
 
@@ -727,14 +788,16 @@ a.fi-wi-stats-overview-stat:focus-visible,
    ========================================================================== */
 
 .fi-simple-layout {
-    background-color: var(--tc-canvas-subtle);
+    background:
+        linear-gradient(180deg, var(--tc-blue-600) 0, var(--tc-blue-600) 38vh, var(--tc-orange-500) 38vh, var(--tc-orange-500) calc(38vh + 3px), var(--tc-canvas-subtle) calc(38vh + 3px));
 }
 
 .fi-simple-main {
     background-color: var(--tc-canvas) !important;
     border: 1px solid var(--tc-border);
     border-radius: var(--tc-radius-lg) !important;
-    box-shadow: none !important;
+    /* it floats across the blue band, so here a card does cast a shadow */
+    box-shadow: var(--tc-shadow-overlay) !important;
     --tw-ring-color: transparent !important;
 }
 
