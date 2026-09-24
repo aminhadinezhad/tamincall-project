@@ -275,6 +275,32 @@ class CallFollowUpTest extends TestCase
             ->assertCanNotSeeTableRecords([$kept]);
     }
 
+    public function test_a_secretary_deletes_a_customer_but_only_a_manager_sees_and_restores_it(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $call = $this->makeCall();
+        $customer = $call->customer;
+
+        // the secretary deletes; the deleted tab and the restore button are not hers
+        $this->actingAs($this->secretary());
+        Livewire::test(ListCustomers::class)
+            ->assertTableActionVisible('delete', $customer)
+            ->callTableAction('delete', $customer);
+
+        $this->assertSoftDeleted($customer);
+        $this->assertSame([], Livewire::test(ListCustomers::class)->instance()->getTabs());
+        $this->get('/customers/'.$customer->id.'/edit')->assertNotFound();
+
+        // the manager finds it under «حذف شده ها» and brings it back, calls and all
+        $this->actingAs(User::create(['name' => 'مدیر', 'email' => 'watch@test.local', 'password' => 'secret123', 'role' => UserRole::Manager]));
+        Livewire::test(ListCustomers::class, ['activeTab' => 'trashed'])
+            ->assertCanSeeTableRecords([$customer])
+            ->callTableAction('restore', $customer);
+
+        $this->assertNotSoftDeleted($customer);
+        $this->assertSame(1, Call::query()->count());
+    }
+
     public function test_searching_the_calls_by_customer_name_narrows_the_list(): void
     {
         Filament::setCurrentPanel('admin');
