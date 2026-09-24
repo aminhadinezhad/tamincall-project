@@ -81,11 +81,10 @@ class CustomerResource extends Resource
                 ($livewire->activeTab ?? null) === 'trashed' => 'مشتری حذف شده ای نیست',
                 default => 'هنوز مشتری ای ثبت نشده',
             })
-            ->emptyStateDescription(fn (HasTable $livewire): string => match (true) {
-                filled($livewire->getTableSearch()) => 'با نام، شرکت یا شماره ی دیگری جستجو کنید.',
-                ($livewire->activeTab ?? null) === 'trashed' => 'مشتریانی که حذف شوند اینجا می آیند و می شود برشان گرداند.',
-                default => 'مشتری ها با ثبت اولین تماسشان اینجا می آیند، یا با دکمه ی «مشتری جدید» بالای صفحه.',
-            });
+            // only a search with no match adds a hint under the heading
+            ->emptyStateDescription(fn (HasTable $livewire): ?string => filled($livewire->getTableSearch())
+                ? 'با نام، شرکت یا شماره ی دیگری جستجو کنید.'
+                : null);
     }
 
     /**

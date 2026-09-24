@@ -102,7 +102,7 @@ class CallsTrendChart extends ChartWidget
         } else {
             $month = Jalalian::fromCarbon($start)->getFirstDayOfMonth();
             while ($month->toCarbon()->lte(today())) {
-                $buckets[] = ['start' => $month->toCarbon()->max($start), 'label' => $month->format('%B')];
+                $buckets[] = ['start' => $month->toCarbon()->max($start), 'label' => Persian::plain($month->format('%B'))];
                 $month = $month->addMonths(1);
             }
         }

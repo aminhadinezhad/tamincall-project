@@ -61,6 +61,19 @@ class CallFollowUpTest extends TestCase
         $this->assertSame('2026-09-23', Call::workingDayAfter(1, Carbon::parse('2026-09-22'))->toDateString());
     }
 
+    public function test_dates_are_written_without_half_spaces(): void
+    {
+        // the Jalali library spells Tuesday and Thursday with a half-space
+        foreach (range(0, 6) as $day) {
+            $date = Carbon::parse('2026-09-19')->addDays($day);
+
+            $this->assertStringNotContainsString("\u{200C}", Persian::dayName($date), $date->toDateString());
+        }
+
+        $this->assertStringStartsWith('سه شنبه', Persian::dayName(Carbon::parse('2026-09-22')));
+        $this->assertStringStartsWith('پنج شنبه', Persian::dayName(Carbon::parse('2026-09-24')));
+    }
+
     public function test_phone_numbers_are_normalised(): void
     {
         foreach (['۰۹۱۲ ۱۲۳ ۴۵۶۷', '+989121234567', '00989121234567', '9121234567', '0912-123-4567'] as $typed) {

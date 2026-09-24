@@ -162,14 +162,14 @@ class CallsTable
                 RecordFollowUpAction::make(),
                 EditAction::make()->label('جزئیات'),
             ])
-            // an empty list says why it is empty and what to do next, tab by tab
+            // an empty list says why it is empty, tab by tab; only a search with no match adds a hint
             ->emptyStateIcon(fn (HasTable $livewire): Heroicon => self::emptyState($livewire)[0])
             ->emptyStateHeading(fn (HasTable $livewire): string => self::emptyState($livewire)[1])
-            ->emptyStateDescription(fn (HasTable $livewire): string => self::emptyState($livewire)[2]);
+            ->emptyStateDescription(fn (HasTable $livewire): ?string => self::emptyState($livewire)[2]);
     }
 
     /**
-     * @return array{0: Heroicon, 1: string, 2: string}
+     * @return array{0: Heroicon, 1: string, 2: ?string}
      */
     private static function emptyState(HasTable $livewire): array
     {
@@ -178,11 +178,11 @@ class CallsTable
         }
 
         return match ($livewire->activeTab ?? null) {
-            'today' => [Heroicon::OutlinedCheckCircle, 'امروز پیگیری ای نمانده', 'همه ی پیگیری های امروز انجام شده است.'],
-            'awaiting' => [Heroicon::OutlinedCheckCircle, 'تماسی در انتظار پیگیری نیست', 'همه ی مشتریان پیگیری شده اند.'],
-            'done' => [Heroicon::OutlinedPhone, 'هنوز تماسی پیگیری نشده', 'نتیجه ی هر پیگیری که ثبت کنید اینجا می آید.'],
-            'unreachable' => [Heroicon::OutlinedPhoneXMark, 'مشتری بی پاسخی نیست', 'مشتریانی که سه بار پاسخ ندهند اینجا می آیند.'],
-            default => [Heroicon::OutlinedPhone, 'هنوز تماسی ثبت نشده', 'اولین تماس مشتری را ثبت کنید.'],
+            'today' => [Heroicon::OutlinedCheckCircle, 'امروز پیگیری ای نمانده', null],
+            'awaiting' => [Heroicon::OutlinedCheckCircle, 'تماسی در انتظار پیگیری نیست', null],
+            'done' => [Heroicon::OutlinedPhone, 'هنوز تماسی پیگیری نشده', null],
+            'unreachable' => [Heroicon::OutlinedPhoneXMark, 'مشتری بی پاسخی نیست', null],
+            default => [Heroicon::OutlinedPhone, 'هنوز تماسی ثبت نشده', null],
         };
     }
 }
