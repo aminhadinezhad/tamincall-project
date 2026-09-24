@@ -6,76 +6,85 @@
 /* ==========================================================================
    Tamin Call — design system
 
-   A clean working tool in the Tamin Falat colours. It is used all day, so it is
-   built for reading and entering data, not for show:
+   The Tamin Falat brand book, laid out the way GitHub lays out a working tool.
 
-   Surfaces   one white card on one light grey page, told apart by a hairline
-              border; a faint shadow only adds depth, it never carries the edge.
-   Elevation  five steps, used by role: xs cards, sm controls, md hover,
-              lg menus, xl dialogs. Nothing else casts a shadow.
-   Colour     navy is every action and the menu icons; orange marks whatever is
-              chosen (the selected option, the active tab, the page you are on);
-              green and red only mean yes and no. Solid fills, no gradients.
-   Shape      one radius scale: 12 cards, 10 bars and menus, 8 controls.
-   Menu       every icon sits in a small tile; the page you are on turns its
-              tile orange.
-   Focus      one ring, the same everywhere, for keyboard users.
-   Motion     short and small (150ms, 1–2px), and off for reduced motion.
+   Brand book   primary #164194 (C100 M80), complementary #f18815 (M55 Y95),
+                neutral #c6c6c6 (K30). Every grey below is a step of that
+                neutral: pure grey, no blue in it.
+   Roles        blue is every action, link and selected row; orange marks what
+                is chosen (the active tab, the chosen option, the page you are
+                on); green and red only mean yes and no.
+   Structure    white canvas; content sits in boxes with a hairline border and a
+                light grey header strip (GitHub's Box); the top bar is the same
+                light grey; no shadow on anything that sits on the page.
+   Shape        6px for boxes and controls, 12px for what floats (menus, dialogs).
+   Focus        one blue ring, the same everywhere.
 
    Light only (darkMode(false)).
    ========================================================================== */
 
 :root {
-    /* brand */
-    --tc-blue-700: #123476;
+    /* brand: primary */
+    --tc-blue-800: #0d2a61;
+    --tc-blue-700: #10306e;
     --tc-blue-600: #164194;
-    --tc-blue-400: #5b83d6;
-    --tc-blue-100: #dbe5f7;
-    --tc-blue-50: #eef3fc;
-    --tc-orange-700: #b85f0b;
-    --tc-orange-600: #d9730d;
+    --tc-blue-100: #dce5f5;
+    --tc-blue-50: #eef3fb;
+
+    /* brand: complementary. #f18815 is a fill colour; as text it needs the 700 step (4.6:1) */
+    --tc-orange-700: #b3600a;
     --tc-orange-500: #f18815;
-    --tc-orange-50: #fff4e6;
+    --tc-orange-50: #fff4e8;
 
-    /* neutrals */
-    --tc-page: #f5f6f8;
-    --tc-surface: #ffffff;
-    --tc-sunken: #f9fafb;
-    --tc-border: #e4e7ec;
-    --tc-border-strong: #d0d5dd;
+    /* brand: neutral, anchored at #c6c6c6 */
+    --tc-grey-0: #ffffff;
+    --tc-grey-50: #f7f7f7;
+    --tc-grey-100: #efefef;
+    --tc-grey-150: #e6e6e6;
+    --tc-grey-200: #d9d9d9;
+    --tc-grey-300: #c6c6c6;
+    --tc-grey-500: #8c8c8c;
+    --tc-grey-600: #6b6b6b;
+    --tc-grey-800: #3d3d3d;
+    --tc-grey-900: #1f1f1f;
 
-    /* ink: 17:1, 10:1 and 4.8:1 on white, all past WCAG AA */
-    --tc-ink: #101828;
-    --tc-ink-2: #344054;
-    --tc-muted: #667085;
+    /* roles */
+    --tc-canvas: var(--tc-grey-0);
+    --tc-canvas-subtle: var(--tc-grey-50);
+    --tc-border: var(--tc-grey-200);
+    --tc-border-muted: var(--tc-grey-150);
+    --tc-border-strong: var(--tc-grey-300);
+    --tc-hover: var(--tc-grey-100);
 
-    /* elevation */
-    --tc-shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
-    --tc-shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
-    --tc-shadow-md: 0 4px 8px -2px rgba(16, 24, 40, 0.1), 0 2px 4px -2px rgba(16, 24, 40, 0.06);
-    --tc-shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03);
-    --tc-shadow-xl: 0 20px 24px -4px rgba(16, 24, 40, 0.1), 0 8px 8px -4px rgba(16, 24, 40, 0.04);
+    /* ink: 16.8:1, 11:1 and 5.3:1 on white, all past WCAG AA */
+    --tc-ink: var(--tc-grey-900);
+    --tc-ink-2: var(--tc-grey-800);
+    --tc-muted: var(--tc-grey-600);
 
     /* shape */
+    --tc-radius: 6px;
     --tc-radius-lg: 12px;
-    --tc-radius-md: 10px;
-    --tc-radius-sm: 8px;
-    --tc-radius-xs: 6px;
+
+    /* elevation: only what floats */
+    --tc-shadow-control: 0 1px 0 rgba(31, 31, 31, 0.04);
+    --tc-shadow-primary: 0 1px 0 rgba(31, 31, 31, 0.1);
+    --tc-shadow-raised: 0 1px 3px rgba(31, 31, 31, 0.1), 0 3px 8px rgba(31, 31, 31, 0.06);
+    --tc-shadow-overlay: 0 1px 3px rgba(31, 31, 31, 0.12), 0 8px 24px rgba(66, 66, 66, 0.14);
+    --tc-shadow-dialog: 0 8px 24px rgba(31, 31, 31, 0.16), 0 24px 48px rgba(31, 31, 31, 0.12);
 
     /* focus */
-    --tc-ring: 0 0 0 4px rgba(22, 65, 148, 0.14);
     --tc-focus: 2px solid var(--tc-blue-600);
 
-    --tc-ease: 150ms ease;
+    --tc-ease: 120ms ease;
 }
 
 /* ==========================================================================
-   Page
+   Canvas
    ========================================================================== */
 
 .fi-body {
     min-height: 100dvh;
-    background-color: var(--tc-page);
+    background-color: var(--tc-canvas);
     color: var(--tc-ink);
 }
 
@@ -87,7 +96,7 @@
 
 .fi-header-heading {
     color: var(--tc-ink);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0;
 }
 
@@ -96,29 +105,28 @@
 }
 
 /* ==========================================================================
-   Cards
+   Boxes: a hairline, a light grey header strip, no shadow
    ========================================================================== */
 
 .fi-section,
 .fi-ta-ctn,
 .fi-wi-stats-overview-stat {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas) !important;
     border: 1px solid var(--tc-border) !important;
-    border-radius: var(--tc-radius-lg) !important;
-    box-shadow: var(--tc-shadow-xs) !important;
+    border-radius: var(--tc-radius) !important;
+    box-shadow: none !important;
     --tw-ring-color: transparent !important;
 }
 
-/* a card inside a card has no frame of its own */
+/* a box inside a box has no frame of its own */
 .fi-ta-ctn .fi-section,
 .fi-section .fi-section,
 .fi-wi-stats-overview .fi-section {
     background: transparent !important;
     border: 0 !important;
-    box-shadow: none !important;
 }
 
-/* the strip a tab bar sits in is not a card */
+/* the strip a tab bar sits in is not a box */
 .fi-sc-tabs,
 .fi-fo-tabs {
     background: transparent !important;
@@ -127,8 +135,28 @@
     --tw-ring-color: transparent !important;
 }
 
+/* the header strip (GitHub's Box-header) */
+.fi-section:not(.fi-section .fi-section) > .fi-section-header {
+    background-color: var(--tc-canvas-subtle);
+    border-bottom: 1px solid var(--tc-border);
+    border-start-start-radius: calc(var(--tc-radius) - 1px);
+    border-start-end-radius: calc(var(--tc-radius) - 1px);
+}
+
+/* …but a group of stat tiles has no box, so its heading is plain text */
+.fi-wi-stats-overview .fi-section > .fi-section-header,
+.fi-wi-stats-overview .fi-section-header {
+    background-color: transparent !important;
+    border-bottom: 0 !important;
+    padding-inline: 0;
+}
+
 .fi-section-header,
 .fi-ta-header {
+    border-color: var(--tc-border) !important;
+}
+
+.fi-section-content-ctn {
     border-color: var(--tc-border) !important;
 }
 
@@ -156,31 +184,31 @@
 .tc-brand__mark {
     display: grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: var(--tc-radius-sm);
-    background-color: var(--tc-surface);
-    box-shadow: inset 0 0 0 1px var(--tc-border), var(--tc-shadow-xs);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--tc-radius);
+    background-color: var(--tc-canvas);
+    box-shadow: inset 0 0 0 1px var(--tc-border);
 }
 
 .tc-brand__mark svg {
-    width: 22px;
-    height: 22px;
+    width: 21px;
+    height: 21px;
 }
 
 .tc-brand__text {
     color: var(--tc-ink);
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     white-space: nowrap;
 }
 
 /* ==========================================================================
-   Top bar: white, one line under it
+   Top bar: light grey, a hairline under it
    ========================================================================== */
 
 .fi-topbar {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas-subtle) !important;
     border-bottom: 1px solid var(--tc-border) !important;
     box-shadow: none !important;
 }
@@ -191,20 +219,14 @@
 }
 
 .fi-topbar .fi-icon-btn:hover {
-    background-color: var(--tc-sunken);
+    background-color: var(--tc-hover);
     color: var(--tc-ink);
 }
 
 .fi-topbar .fi-global-search-field .fi-input-wrp {
-    background-color: var(--tc-sunken) !important;
-    border: 1px solid var(--tc-border) !important;
+    background-color: var(--tc-canvas) !important;
+    border: 1px solid var(--tc-border-strong) !important;
     box-shadow: none !important;
-}
-
-.fi-topbar .fi-global-search-field .fi-input-wrp:focus-within {
-    background-color: var(--tc-surface) !important;
-    border-color: var(--tc-blue-400) !important;
-    box-shadow: var(--tc-ring) !important;
 }
 
 .fi-topbar .fi-global-search-field .fi-input::placeholder,
@@ -213,11 +235,11 @@
 }
 
 /* ==========================================================================
-   Side bar: white, every icon in a tile
+   Side bar: a plain list, the current page marked by an orange bar
    ========================================================================== */
 
 .fi-sidebar {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas) !important;
     border: 0 !important;
     border-inline-start: 1px solid var(--tc-border) !important;
     box-shadow: none !important;
@@ -226,83 +248,76 @@
 @media (max-width: 1023.98px) {
     .fi-sidebar.fi-sidebar-open {
         border-inline-start: 0 !important;
-        box-shadow: var(--tc-shadow-xl) !important;
+        box-shadow: var(--tc-shadow-dialog) !important;
     }
 }
 
 .fi-sidebar-header {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas-subtle) !important;
     border-color: var(--tc-border) !important;
     box-shadow: none !important;
 }
 
 .fi-sidebar-nav {
-    padding-block: 14px;
+    padding-block: 16px;
 }
 
 .fi-sidebar-group-label {
     color: var(--tc-muted);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.02em;
 }
 
 .fi-sidebar-group-collapse-button,
 .fi-sidebar-group-collapse-button .fi-icon {
-    color: var(--tc-muted);
+    color: var(--tc-grey-500);
 }
 
 .fi-sidebar-item-btn {
-    gap: 12px;
-    border-radius: var(--tc-radius-md);
+    position: relative;
+    gap: 10px;
+    border-radius: var(--tc-radius);
     padding-block: 7px;
     transition: background-color var(--tc-ease);
 }
 
-/* the icon tile */
 .fi-sidebar-item-btn > .fi-icon {
-    box-sizing: border-box;
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    padding: 7px;
-    border-radius: var(--tc-radius-sm);
-    background-color: var(--tc-sunken);
-    box-shadow: inset 0 0 0 1px var(--tc-border);
-    color: var(--tc-blue-600);
-    transition: background-color var(--tc-ease), color var(--tc-ease), box-shadow var(--tc-ease);
+    color: var(--tc-grey-600);
 }
 
 .fi-sidebar-item-label {
     color: var(--tc-ink-2);
-    font-weight: 600;
-    transition: color var(--tc-ease);
+    font-weight: 500;
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover {
-    background-color: var(--tc-sunken);
+    background-color: var(--tc-hover);
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-sidebar-item-label {
     color: var(--tc-ink);
 }
 
-.fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-icon {
-    background-color: var(--tc-blue-50);
-    box-shadow: inset 0 0 0 1px var(--tc-blue-100);
-}
-
-/* the page you are on: a light orange row, its tile orange; nothing changes under the pointer */
+/* the page you are on: a grey row with an orange bar on its reading edge; nothing changes
+   under the pointer */
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:hover,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:focus-visible {
-    background-color: var(--tc-orange-50) !important;
+    background-color: var(--tc-hover) !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn::after {
+    content: '';
+    position: absolute;
+    inset-block: 6px;
+    inset-inline-start: -8px;
+    width: 4px;
+    border-radius: var(--tc-radius);
+    background-color: var(--tc-orange-500);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
-    background-color: var(--tc-orange-500);
-    box-shadow: 0 2px 6px rgba(241, 136, 21, 0.3);
-    color: #fff;
+    color: var(--tc-blue-600);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
@@ -310,10 +325,12 @@
     font-weight: 700;
 }
 
+/* counters in the menu: an orange pill */
 .fi-sidebar-item .fi-badge {
     background-color: var(--tc-orange-500) !important;
     color: #fff !important;
     border-radius: 999px;
+    font-weight: 700;
     --tw-ring-color: transparent !important;
 }
 
@@ -323,7 +340,6 @@
 
 .fi-wi-stats-overview-stat {
     position: relative;
-    overflow: hidden;
 }
 
 .fi-wi-stats-overview-stat-label {
@@ -341,26 +357,20 @@
     font-weight: 700;
 }
 
-/* tiles that open a page (the three «امروز» ones are links): they rise a little and an
-   arrow tile appears, so they read as clickable; the report tiles (no link) stay still */
+/* tiles that open a page (the three «امروز» ones are links): the border turns blue and an
+   arrow appears, so they read as clickable; the report tiles (no link) stay still */
 a.fi-wi-stats-overview-stat {
     cursor: pointer;
-    transition: transform var(--tc-ease), box-shadow var(--tc-ease), border-color var(--tc-ease);
+    transition: border-color var(--tc-ease), box-shadow var(--tc-ease);
 }
 
 a.fi-wi-stats-overview-stat::after {
     content: '←';
     position: absolute;
     inset-block-start: 16px;
-    inset-inline-end: 16px;
-    display: grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--tc-radius-sm);
-    background-color: var(--tc-orange-50);
-    color: var(--tc-orange-600);
-    font-size: 15px;
+    inset-inline-end: 18px;
+    color: var(--tc-blue-600);
+    font-size: 17px;
     font-weight: 700;
     opacity: 0;
     transform: translateX(4px);
@@ -369,9 +379,8 @@ a.fi-wi-stats-overview-stat::after {
 
 a.fi-wi-stats-overview-stat:hover,
 a.fi-wi-stats-overview-stat:focus-visible {
-    transform: translateY(-2px);
-    border-color: var(--tc-border-strong) !important;
-    box-shadow: var(--tc-shadow-md) !important;
+    border-color: var(--tc-blue-600) !important;
+    box-shadow: var(--tc-shadow-raised) !important;
 }
 
 a.fi-wi-stats-overview-stat:hover::after,
@@ -386,7 +395,7 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 .fi-ta-table > thead > tr > th,
 .fi-ta-header-cell {
-    background-color: var(--tc-sunken) !important;
+    background-color: var(--tc-canvas-subtle) !important;
 }
 
 .fi-ta-header-cell-label {
@@ -401,14 +410,18 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-ta-row:hover {
-    background-color: var(--tc-sunken);
+    background-color: var(--tc-canvas-subtle);
 }
 
 .fi-ta-table > tbody,
 .fi-ta-row,
+.fi-pagination {
+    border-color: var(--tc-border-muted) !important;
+}
+
 .fi-ta-header-toolbar,
 .fi-ta-filters,
-.fi-pagination {
+.fi-ta-table > thead {
     border-color: var(--tc-border) !important;
 }
 
@@ -416,70 +429,89 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     color: var(--tc-ink);
 }
 
-/* an empty list: the icon in a brand tile */
+/* an empty list */
 .fi-ta-empty-state-icon-bg {
-    background-color: var(--tc-blue-50) !important;
+    background-color: var(--tc-canvas-subtle) !important;
+    box-shadow: inset 0 0 0 1px var(--tc-border);
 }
 
 .fi-ta-empty-state-icon-bg .fi-icon {
-    color: var(--tc-blue-600) !important;
+    color: var(--tc-grey-600) !important;
 }
 
 .fi-ta-empty-state-heading {
     color: var(--tc-ink);
 }
 
-/* badges: pills */
-.fi-badge {
+/* labels in a table (status, type, source): GitHub's outlined pills, in their own colour */
+.fi-ta-row .fi-badge,
+.fi-in-entry .fi-badge {
+    background-color: transparent !important;
+    box-shadow: inset 0 0 0 1px currentColor !important;
     border-radius: 999px;
     font-weight: 600;
-    padding-inline: 9px;
+    padding-inline: 8px;
+    --tw-ring-color: transparent !important;
 }
 
 /* ==========================================================================
-   Tabs: a segmented bar, the chosen one orange
+   Tabs: GitHub's underline bar, the chosen one underlined in orange
    ========================================================================== */
 
 .fi-tabs {
-    background-color: var(--tc-surface) !important;
-    border: 1px solid var(--tc-border) !important;
-    border-radius: var(--tc-radius-md) !important;
-    box-shadow: var(--tc-shadow-xs) !important;
-    padding: 4px;
-    gap: 2px;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--tc-border) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0;
+    gap: 4px;
     --tw-ring-color: transparent !important;
 }
 
 .fi-tabs-item {
-    border-radius: var(--tc-radius-sm);
-    font-weight: 600;
+    border-radius: var(--tc-radius) var(--tc-radius) 0 0;
+    padding-block: 10px;
+    font-weight: 500;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* the other tabs do not react to the pointer: no background, no colour change */
-.fi-tabs-item:not(.fi-active):hover,
-.fi-tabs-item:not(.fi-active):focus-visible {
-    background: transparent !important;
-}
-
 .fi-tabs-item:not(.fi-active) .fi-tabs-item-label,
 .fi-tabs-item:not(.fi-active):hover .fi-tabs-item-label,
 .fi-tabs-item:not(.fi-active):focus-visible .fi-tabs-item-label {
     color: var(--tc-muted);
 }
 
-.fi-tabs-item.fi-active {
-    background-color: var(--tc-orange-500) !important;
-    box-shadow: var(--tc-shadow-xs);
+.fi-tabs-item.fi-active .fi-tabs-item-label {
+    color: var(--tc-ink) !important;
+    font-weight: 700;
 }
 
-.fi-tabs-item.fi-active .fi-tabs-item-label,
 .fi-tabs-item.fi-active .fi-icon {
-    color: #fff !important;
+    color: var(--tc-ink) !important;
+}
+
+/* the underline is drawn inside the tab, on the bar's own line, so it never makes the bar
+   scroll */
+.fi-tabs-item.fi-active {
+    box-shadow: inset 0 -2px 0 var(--tc-orange-500) !important;
+}
+
+/* counters in tabs: neutral pills; the chosen tab's in orange */
+.fi-tabs-item .fi-badge {
+    background-color: rgba(198, 198, 198, 0.35) !important;
+    color: var(--tc-ink) !important;
+    border-radius: 999px;
+    font-weight: 600;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
 }
 
 .fi-tabs-item.fi-active .fi-badge {
-    background-color: rgba(255, 255, 255, 0.92) !important;
-    color: var(--tc-orange-700) !important;
+    background-color: var(--tc-orange-500) !important;
+    color: #fff !important;
 }
 
 /* ==========================================================================
@@ -487,26 +519,27 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
    ========================================================================== */
 
 .fi-btn {
-    border-radius: var(--tc-radius-sm);
+    border-radius: var(--tc-radius);
     font-weight: 600;
 }
 
-/* primary: one solid navy in every state, so hovering never shows another background */
+/* primary: brand blue with a hairline, one solid colour in every state */
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label) {
     background-color: var(--tc-blue-600) !important;
     background-image: none !important;
     color: #fff;
-    box-shadow: var(--tc-shadow-xs);
-    transition: background-color var(--tc-ease), box-shadow var(--tc-ease);
+    border: 1px solid rgba(31, 31, 31, 0.15);
+    box-shadow: var(--tc-shadow-primary), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: background-color var(--tc-ease);
 }
 
-.fi-btn.fi-color-primary:not(.fi-outlined):not(label):hover {
-    background-color: var(--tc-blue-700) !important;
-}
-
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label):hover,
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label):focus-visible {
     background-color: var(--tc-blue-700) !important;
-    box-shadow: var(--tc-shadow-xs), var(--tc-ring);
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined):not(label):active {
+    background-color: var(--tc-blue-800) !important;
 }
 
 .fi-btn.fi-color-primary:not(.fi-outlined):not(label) .fi-icon,
@@ -514,44 +547,44 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
     color: #fff;
 }
 
-/* secondary (cancel, grey): white with a hairline */
+/* default (cancel, grey): GitHub's light grey button */
 .fi-btn.fi-color-gray:not(label) {
-    background-color: var(--tc-surface);
-    color: var(--tc-ink-2);
+    background-color: var(--tc-canvas-subtle);
+    color: var(--tc-ink);
     border: 1px solid var(--tc-border-strong);
-    box-shadow: var(--tc-shadow-xs);
+    box-shadow: var(--tc-shadow-control), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     --tw-ring-color: transparent !important;
     transition: background-color var(--tc-ease);
 }
 
 .fi-btn.fi-color-gray:not(label):hover {
-    background-color: var(--tc-sunken);
+    background-color: var(--tc-hover);
 }
 
 /* ==========================================================================
-   Option buttons (ToggleButtons): raised white tiles, the chosen one orange
+   Option buttons (ToggleButtons): grey buttons, the chosen one orange
    ========================================================================== */
 
 .fi-fo-toggle-buttons .fi-btn {
-    background-color: var(--tc-surface) !important;
-    color: var(--tc-ink-2) !important;
+    background-color: var(--tc-canvas-subtle) !important;
+    color: var(--tc-ink) !important;
     border: 1px solid var(--tc-border-strong);
-    box-shadow: var(--tc-shadow-xs) !important;
+    box-shadow: var(--tc-shadow-control) !important;
     --tw-ring-color: transparent !important;
-    transition: background-color var(--tc-ease), color var(--tc-ease), border-color var(--tc-ease), box-shadow var(--tc-ease);
+    transition: background-color var(--tc-ease), color var(--tc-ease), border-color var(--tc-ease);
 }
 
 .fi-fo-toggle-buttons .fi-btn .fi-icon {
     color: var(--tc-muted) !important;
 }
 
-/* hover only raises the tile; no border colour appears */
+/* hover only darkens the grey; no border colour appears */
 .fi-fo-toggle-buttons .fi-btn:hover {
-    box-shadow: var(--tc-shadow-sm) !important;
+    background-color: var(--tc-hover) !important;
 }
 
-/* the paired yes/no questions (grouped buttons): no frame around the pair; each button is
-   its own tile, with a small gap between them */
+/* the paired yes/no questions (grouped buttons): no frame around the pair; each button keeps
+   its own border, with a small gap between them */
 .fi-fo-toggle-buttons.fi-btn-group {
     gap: 8px;
     box-shadow: none !important;
@@ -560,14 +593,15 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-fo-toggle-buttons.fi-btn-group .fi-btn {
-    border-radius: var(--tc-radius-sm) !important;
+    border-radius: var(--tc-radius) !important;
     margin: 0 !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn {
     background-color: var(--tc-orange-500) !important;
-    border-color: var(--tc-orange-500);
+    border-color: rgba(31, 31, 31, 0.12);
     color: #fff !important;
+    box-shadow: var(--tc-shadow-primary) !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn .fi-icon {
@@ -576,18 +610,15 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 
 /* answered / not, bought / not, and satisfaction keep their own meaning colours when chosen */
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-success {
-    background-color: #16a34a !important;
-    border-color: #16a34a;
+    background-color: #1a7f37 !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-danger {
-    background-color: #dc2626 !important;
-    border-color: #dc2626;
+    background-color: #cf222e !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:checked + .fi-btn.fi-color-gray {
-    background-color: #64748b !important;
-    border-color: #64748b;
+    background-color: var(--tc-grey-600) !important;
 }
 
 .fi-fo-toggle-buttons .fi-fo-toggle-buttons-input:focus-visible + .fi-btn {
@@ -600,21 +631,22 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
    ========================================================================== */
 
 .fi-input-wrp {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas) !important;
     border: 1px solid var(--tc-border-strong);
-    border-radius: var(--tc-radius-sm);
-    box-shadow: var(--tc-shadow-xs);
+    border-radius: var(--tc-radius);
+    box-shadow: inset 0 1px 0 rgba(198, 198, 198, 0.2);
     --tw-ring-color: transparent !important;
     transition: border-color var(--tc-ease), box-shadow var(--tc-ease);
 }
 
+/* GitHub's focus: the border turns blue and doubles */
 .fi-input-wrp:focus-within {
-    border-color: var(--tc-blue-400);
-    box-shadow: var(--tc-shadow-xs), var(--tc-ring);
+    border-color: var(--tc-blue-600);
+    box-shadow: inset 0 0 0 1px var(--tc-blue-600);
 }
 
 .fi-fo-field-wrp-label {
-    color: var(--tc-ink-2);
+    color: var(--tc-ink);
     font-weight: 600;
 }
 
@@ -628,14 +660,14 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
    ========================================================================== */
 
 .fi-modal-close-overlay {
-    background-color: rgba(8, 22, 48, 0.45) !important;
+    background-color: rgba(31, 31, 31, 0.45) !important;
 }
 
 .fi-modal-window {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas) !important;
     border: 1px solid var(--tc-border);
     border-radius: var(--tc-radius-lg) !important;
-    box-shadow: var(--tc-shadow-xl) !important;
+    box-shadow: var(--tc-shadow-dialog) !important;
     --tw-ring-color: transparent !important;
 }
 
@@ -648,28 +680,28 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 .fi-dropdown-panel {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas) !important;
     border: 1px solid var(--tc-border);
-    border-radius: var(--tc-radius-md) !important;
-    box-shadow: var(--tc-shadow-lg) !important;
+    border-radius: var(--tc-radius-lg) !important;
+    box-shadow: var(--tc-shadow-overlay) !important;
     --tw-ring-color: transparent !important;
 }
 
-/* menu rows (the account menu, the row menus, the column list): a soft tint of their own
-   colour under the pointer, never a flat white block */
+/* menu rows (the account menu, the row menus, the column list): a grey row under the pointer,
+   never a white block */
 .fi-dropdown-list-item {
-    border-radius: var(--tc-radius-xs);
+    border-radius: var(--tc-radius);
 }
 
 .fi-dropdown-list-item:not(.fi-disabled):not([disabled]):hover,
 .fi-dropdown-list-item:not(.fi-disabled):not([disabled]):focus-visible,
 .fi-dropdown-list-item:not(.fi-disabled):not([disabled]).fi-selected {
-    background-color: var(--tc-blue-50) !important;
+    background-color: var(--tc-hover) !important;
 }
 
 .fi-dropdown-list-item.fi-color-danger:not(.fi-disabled):not([disabled]):hover,
 .fi-dropdown-list-item.fi-color-danger:not(.fi-disabled):not([disabled]):focus-visible {
-    background-color: #fef3f2 !important;
+    background-color: #ffebe9 !important;
 }
 
 .fi-dropdown-list-item.fi-color-warning:not(.fi-disabled):not([disabled]):hover,
@@ -678,18 +710,14 @@ a.fi-wi-stats-overview-stat:focus-visible::after {
 }
 
 /* ==========================================================================
-   Keyboard focus: one ring everywhere
+   Keyboard focus: one blue ring everywhere
    ========================================================================== */
 
+.fi-sidebar-item-btn:focus-visible,
 .fi-tabs-item:focus-visible,
 a.fi-wi-stats-overview-stat:focus-visible,
-.fi-btn.fi-color-gray:not(label):focus-visible,
+.fi-btn:not(label):focus-visible,
 .fi-link:focus-visible {
-    outline: var(--tc-focus);
-    outline-offset: 2px;
-}
-
-.fi-sidebar-item-btn:focus-visible {
     outline: var(--tc-focus);
     outline-offset: 2px;
 }
@@ -699,26 +727,25 @@ a.fi-wi-stats-overview-stat:focus-visible,
    ========================================================================== */
 
 .fi-simple-layout {
-    background-color: var(--tc-page);
+    background-color: var(--tc-canvas-subtle);
 }
 
 .fi-simple-main {
-    background-color: var(--tc-surface) !important;
+    background-color: var(--tc-canvas) !important;
     border: 1px solid var(--tc-border);
     border-radius: var(--tc-radius-lg) !important;
-    box-shadow: var(--tc-shadow-lg) !important;
+    box-shadow: none !important;
     --tw-ring-color: transparent !important;
 }
 
 .fi-simple-header .tc-brand__mark {
-    width: 46px;
-    height: 46px;
-    border-radius: var(--tc-radius-md);
+    width: 44px;
+    height: 44px;
 }
 
 .fi-simple-header .tc-brand__mark svg {
-    width: 30px;
-    height: 30px;
+    width: 29px;
+    height: 29px;
 }
 
 .fi-simple-header .tc-brand__text {
@@ -738,10 +765,5 @@ a.fi-wi-stats-overview-stat:focus-visible,
     *::before,
     *::after {
         transition-duration: 0.01ms !important;
-    }
-
-    a.fi-wi-stats-overview-stat:hover,
-    a.fi-wi-stats-overview-stat:focus-visible {
-        transform: none;
     }
 }

@@ -45,10 +45,11 @@ class AdminPanelProvider extends PanelProvider
             // web app: added to a phone's home screen it opens full screen with its own icon
             ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => implode('', [
                 '<link rel="manifest" href="'.e(asset('manifest.webmanifest')).'">',
-                '<meta name="theme-color" content="#091a3b">',
+                // the status bar matches the light grey top bar
+                '<meta name="theme-color" content="#f7f7f7">',
                 '<meta name="mobile-web-app-capable" content="yes">',
                 '<meta name="apple-mobile-web-app-capable" content="yes">',
-                '<meta name="apple-mobile-web-app-status-bar-style" content="black">',
+                '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
                 '<meta name="apple-mobile-web-app-title" content="تامین کال">',
                 '<link rel="apple-touch-icon" href="'.e(asset('ico/apple-touch-icon.png')).'">',
             ]))
@@ -56,7 +57,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::hex('#164194'),
                 'warning' => Color::hex('#f18815'),
-                'gray' => Color::Slate,
+                // the brand book's neutral (#c6c6c6, K30) is a pure grey, so Filament's greys are too
+                'gray' => Color::Neutral,
             ])
             ->navigationGroups([
                 'تماس ها',
