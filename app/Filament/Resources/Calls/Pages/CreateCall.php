@@ -46,7 +46,7 @@ class CreateCall extends CreateRecord
         return Notification::make()
             ->success()
             ->title('تماس '.$this->record->customer?->name.' ثبت شد')
-            ->body('برای '.Persian::dayName($this->record->follow_up_on).' در فهرست «پیگیری امروز» قرار گرفت.');
+            ->body('برای '.Persian::dayName($this->record->follow_up_on).' در فهرست پیگیری قرار گرفت.');
     }
 
     protected function getRedirectUrl(): string

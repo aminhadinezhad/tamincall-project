@@ -783,3 +783,70 @@ a.fi-wi-stats-overview-stat:focus-visible,
         display: none;
     }
 }
+
+/* ==========================================================================
+   Star rating (satisfaction)
+   ========================================================================== */
+
+.tc-rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+}
+
+.tc-rating__stars {
+    display: flex;
+    gap: 2px;
+}
+
+.tc-rating__star {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--tc-radius);
+    color: var(--tc-grey-200);
+    cursor: pointer;
+    transition: color var(--tc-ease), transform var(--tc-ease);
+}
+
+.tc-rating__star svg {
+    width: 30px;
+    height: 30px;
+    fill: currentColor;
+}
+
+/* the stars up to the one under the pointer, or the chosen one, turn orange */
+.tc-rating__star.is-on {
+    color: var(--tc-orange-500);
+}
+
+.tc-rating__star:hover {
+    transform: scale(1.12);
+}
+
+.tc-rating__star:focus-visible {
+    outline: var(--tc-focus);
+    outline-offset: 1px;
+}
+
+/* the level's name, coloured by what it means */
+.tc-rating__label {
+    min-width: 88px;
+    color: var(--tc-muted);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.tc-rating__label.is-bad {
+    color: #cf222e;
+}
+
+.tc-rating__label.is-mid {
+    color: var(--tc-grey-600);
+}
+
+.tc-rating__label.is-good {
+    color: #1a7f37;
+}

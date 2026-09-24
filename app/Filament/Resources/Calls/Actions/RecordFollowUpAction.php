@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Calls\Actions;
 
 use App\Enums\CallStatus;
 use App\Enums\NoPurchaseReason;
+use App\Filament\Forms\Components\StarRating;
 use App\Models\Call;
 use App\Support\Persian;
 use Filament\Actions\Action;
@@ -79,19 +80,15 @@ class RecordFollowUpAction
                     ->required(fn (Get $get): bool => $get('answered') && $get('purchased') === false)
                     ->visible(fn (Get $get): bool => $get('answered') && $get('purchased') === false),
 
-                ToggleButtons::make('agent_satisfaction')
+                StarRating::make('agent_satisfaction')
                     ->label('رضایت از برخورد کارشناس فروش')
-                    ->options(self::SATISFACTION)
-                    ->colors(self::SATISFACTION_COLORS)
-                    ->inline()
+                    ->levels(self::SATISFACTION)
                     ->required(fn (Get $get): bool => (bool) $get('answered'))
                     ->visible(fn (Get $get): bool => (bool) $get('answered')),
 
-                ToggleButtons::make('overall_satisfaction')
+                StarRating::make('overall_satisfaction')
                     ->label('رضایت کلی از تامین فلات')
-                    ->options(self::SATISFACTION)
-                    ->colors(self::SATISFACTION_COLORS)
-                    ->inline()
+                    ->levels(self::SATISFACTION)
                     ->required(fn (Get $get): bool => (bool) $get('answered'))
                     ->visible(fn (Get $get): bool => (bool) $get('answered')),
 

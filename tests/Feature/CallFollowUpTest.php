@@ -152,6 +152,19 @@ class CallFollowUpTest extends TestCase
         $this->assertSame(auth()->id(), $call->result->user_id);
     }
 
+    public function test_the_star_ratings_are_required_and_only_take_one_to_five(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+        $call = $this->makeCall();
+
+        Livewire::test(ListCalls::class, ['activeTab' => 'today'])
+            ->callTableAction('recordFollowUp', $call, ['answered' => true, 'purchased' => true, 'overall_satisfaction' => 7])
+            ->assertHasTableActionErrors(['agent_satisfaction' => 'required', 'overall_satisfaction' => 'between']);
+
+        $this->assertSame(CallStatus::AwaitingFollowUp, $call->fresh()->status);
+    }
+
     public function test_the_new_call_form_saves_source_and_notes_and_requires_the_source(): void
     {
         Filament::setCurrentPanel('admin');
