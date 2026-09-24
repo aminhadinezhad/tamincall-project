@@ -179,7 +179,7 @@ class CallsTable
 
         return match ($livewire->activeTab ?? null) {
             'today' => [Heroicon::OutlinedCheckCircle, 'امروز پیگیری ای نمانده', null],
-            'awaiting' => [Heroicon::OutlinedCheckCircle, 'تماسی در انتظار پیگیری نیست', null],
+            'awaiting' => [Heroicon::OutlinedClock, 'تماسی در انتظار پیگیری نیست', null],
             'done' => [Heroicon::OutlinedPhone, 'هنوز تماسی پیگیری نشده', null],
             'unreachable' => [Heroicon::OutlinedPhoneXMark, 'مشتری بی پاسخی نیست', null],
             default => [Heroicon::OutlinedPhone, 'هنوز تماسی ثبت نشده', null],

@@ -78,7 +78,7 @@ class SalesAgentResource extends Resource
             // an empty list says what to do next
             ->emptyStateIcon(Heroicon::OutlinedBriefcase)
             ->emptyStateHeading('هنوز کارشناسی ثبت نشده')
-            ->emptyStateDescription('با دکمه ی «کارشناس جدید» بالای صفحه کارشناسان را اضافه کنید تا تماس ها به آن ها ارجاع شود.');
+            ->emptyStateDescription(null);
     }
 
     public static function getPages(): array
