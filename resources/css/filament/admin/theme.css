@@ -13,7 +13,7 @@
               border; a faint shadow only adds depth, it never carries the edge.
    Elevation  five steps, used by role: xs cards, sm controls, md hover,
               lg menus, xl dialogs. Nothing else casts a shadow.
-   Colour     navy is the navigation and every action; orange marks whatever is
+   Colour     navy is every action and the menu icons; orange marks whatever is
               chosen (the selected option, the active tab, the page you are on);
               green and red only mean yes and no. Solid fills, no gradients.
    Shape      one radius scale: 12 cards, 10 bars and menus, 8 controls.
@@ -27,8 +27,6 @@
 
 :root {
     /* brand */
-    --tc-navy-950: #081630;
-    --tc-navy-900: #0b1b38;
     --tc-blue-700: #123476;
     --tc-blue-600: #164194;
     --tc-blue-400: #5b83d6;
@@ -215,34 +213,27 @@
 }
 
 /* ==========================================================================
-   Side bar: navy, every icon in a tile
+   Side bar: white, every icon in a tile
    ========================================================================== */
 
 .fi-sidebar {
-    background-color: var(--tc-navy-900) !important;
+    background-color: var(--tc-surface) !important;
     border: 0 !important;
+    border-inline-start: 1px solid var(--tc-border) !important;
     box-shadow: none !important;
 }
 
 @media (max-width: 1023.98px) {
     .fi-sidebar.fi-sidebar-open {
+        border-inline-start: 0 !important;
         box-shadow: var(--tc-shadow-xl) !important;
     }
 }
 
-/* on a phone the side bar carries the brand at its head, so the name turns white there */
 .fi-sidebar-header {
-    background-color: transparent !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
+    background-color: var(--tc-surface) !important;
+    border-color: var(--tc-border) !important;
     box-shadow: none !important;
-}
-
-.fi-sidebar .tc-brand__text {
-    color: #fff;
-}
-
-.fi-sidebar .tc-brand__mark {
-    box-shadow: none;
 }
 
 .fi-sidebar-nav {
@@ -250,7 +241,7 @@
 }
 
 .fi-sidebar-group-label {
-    color: rgba(255, 255, 255, 0.42);
+    color: var(--tc-muted);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -258,7 +249,7 @@
 
 .fi-sidebar-group-collapse-button,
 .fi-sidebar-group-collapse-button .fi-icon {
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--tc-muted);
 }
 
 .fi-sidebar-item-btn {
@@ -276,45 +267,46 @@
     height: 32px;
     padding: 7px;
     border-radius: var(--tc-radius-sm);
-    background-color: rgba(255, 255, 255, 0.07);
-    color: rgba(255, 255, 255, 0.72);
-    transition: background-color var(--tc-ease), color var(--tc-ease);
+    background-color: var(--tc-sunken);
+    box-shadow: inset 0 0 0 1px var(--tc-border);
+    color: var(--tc-blue-600);
+    transition: background-color var(--tc-ease), color var(--tc-ease), box-shadow var(--tc-ease);
 }
 
 .fi-sidebar-item-label {
-    color: rgba(255, 255, 255, 0.74);
+    color: var(--tc-ink-2);
     font-weight: 600;
     transition: color var(--tc-ease);
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--tc-sunken);
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-sidebar-item-label {
-    color: #fff;
+    color: var(--tc-ink);
 }
 
 .fi-sidebar-item.fi-sidebar-item-has-url:not(.fi-active) > .fi-sidebar-item-btn:hover > .fi-icon {
-    background-color: rgba(255, 255, 255, 0.12);
-    color: #fff;
+    background-color: var(--tc-blue-50);
+    box-shadow: inset 0 0 0 1px var(--tc-blue-100);
 }
 
-/* the page you are on: its tile turns orange; nothing changes under the pointer */
+/* the page you are on: a light orange row, its tile orange; nothing changes under the pointer */
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:hover,
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn:focus-visible {
-    background-color: rgba(255, 255, 255, 0.09) !important;
+    background-color: var(--tc-orange-50) !important;
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
     background-color: var(--tc-orange-500);
+    box-shadow: 0 2px 6px rgba(241, 136, 21, 0.3);
     color: #fff;
-    box-shadow: 0 2px 6px rgba(241, 136, 21, 0.35);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
-    color: #fff;
+    color: var(--tc-ink);
     font-weight: 700;
 }
 
@@ -698,7 +690,7 @@ a.fi-wi-stats-overview-stat:focus-visible,
 }
 
 .fi-sidebar-item-btn:focus-visible {
-    outline: 2px solid #fff;
+    outline: var(--tc-focus);
     outline-offset: 2px;
 }
 
