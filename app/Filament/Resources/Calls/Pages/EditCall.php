@@ -6,6 +6,7 @@ use App\Enums\CallStatus;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Filament\Resources\Calls\CallResource;
 use App\Models\Call;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditCall extends EditRecord
@@ -23,6 +24,12 @@ class EditCall extends EditRecord
         return [
             RecordFollowUpAction::make()->after(fn () => $this->refreshFormData(['status', 'follow_up_on'])),
         ];
+    }
+
+    /** Ctrl+S saves. */
+    protected function getSaveFormAction(): Action
+    {
+        return parent::getSaveFormAction()->keyBindings(['mod+s']);
     }
 
     /**

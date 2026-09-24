@@ -42,6 +42,8 @@ class CallForm
                             ->getOptionLabelFromRecordUsing(fn (Customer $record): string => $record->name.' - '.$record->phone)
                             ->searchable(['name', 'phone', 'company'])
                             ->preload()
+                            // the cursor starts here on a new call, so typing the name or number is the first key
+                            ->autofocus(fn (string $operation): bool => $operation === 'create')
                             ->required()
                             ->helperText('با نام یا شماره جستجو کنید؛ مشتری جدید را با دکمه + اضافه کنید.')
                             ->createOptionForm(self::customerFields())

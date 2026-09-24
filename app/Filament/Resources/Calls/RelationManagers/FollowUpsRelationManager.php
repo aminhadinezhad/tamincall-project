@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Calls\RelationManagers;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
 use App\Support\Persian;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -71,7 +72,8 @@ class FollowUpsRelationManager extends RelationManager
                     ->label('ثبت توسط')
                     ->placeholder('—'),
             ])
+            ->emptyStateIcon(Heroicon::OutlinedClock)
             ->emptyStateHeading('هنوز پیگیری ثبت نشده')
-            ->emptyStateDescription(null);
+            ->emptyStateDescription('با دکمه ی «ثبت نتیجه» بالای همین صفحه، نتیجه ی تماس با مشتری را ثبت کنید.');
     }
 }

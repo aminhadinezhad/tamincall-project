@@ -10,6 +10,7 @@ use App\Filament\Resources\Customers\RelationManagers\CallsRelationManager;
 use App\Models\Customer;
 use App\Support\Persian;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
@@ -18,6 +19,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -68,6 +70,30 @@ class CustomerResource extends Resource
                 RestoreAction::make()
                     ->label('برگرداندن')
                     ->visible(fn (Customer $record): bool => auth()->user()->isManager() && $record->trashed()),
+            ])
+            // an empty list says why it is empty and what to do next
+            ->emptyStateIcon(fn (HasTable $livewire): Heroicon => match (true) {
+                filled($livewire->getTableSearch()) => Heroicon::OutlinedMagnifyingGlass,
+                ($livewire->activeTab ?? null) === 'trashed' => Heroicon::OutlinedTrash,
+                default => Heroicon::OutlinedUsers,
+            })
+            ->emptyStateHeading(fn (HasTable $livewire): string => match (true) {
+                filled($livewire->getTableSearch()) => 'نتیجه ای پیدا نشد',
+                ($livewire->activeTab ?? null) === 'trashed' => 'مشتری حذف شده ای نیست',
+                default => 'هنوز مشتری ای ثبت نشده',
+            })
+            ->emptyStateDescription(fn (HasTable $livewire): string => match (true) {
+                filled($livewire->getTableSearch()) => 'با نام، شرکت یا شماره ی دیگری جستجو کنید.',
+                ($livewire->activeTab ?? null) === 'trashed' => 'مشتریانی که حذف شوند اینجا می آیند و می شود برشان گرداند.',
+                default => 'مشتری ها با ثبت اولین تماسشان اینجا می آیند، یا از همین جا اضافه شان کنید.',
+            })
+            ->emptyStateActions([
+                Action::make('createFromEmpty')
+                    ->label('مشتری جدید')
+                    ->icon(Heroicon::Plus)
+                    ->url(fn (): string => static::getUrl('create'))
+                    ->visible(fn (HasTable $livewire): bool => blank($livewire->getTableSearch())
+                        && ($livewire->activeTab ?? null) !== 'trashed'),
             ]);
     }
 

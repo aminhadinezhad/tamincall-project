@@ -6,13 +6,18 @@ use App\Enums\AcquisitionSource;
 use App\Enums\CallStatus;
 use App\Enums\CustomerType;
 use App\Filament\Resources\Calls\Actions\RecordFollowUpAction;
+use App\Filament\Resources\Calls\CallResource;
 use App\Models\Call;
 use App\Models\Customer;
 use App\Support\Persian;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -113,8 +118,11 @@ class CallsTable
             ])
             // newest call on top; the columns are still sortable by hand
             ->defaultSort('created_at', 'desc')
-            ->filtersLayout(FiltersLayout::AboveContentCollapsible)
-            ->filtersFormColumns(5)
+            // the filters open from the funnel beside the search, as on every other table, instead
+            // of taking a near-empty row of their own above the list
+            ->filtersLayout(FiltersLayout::Dropdown)
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(Width::ExtraLarge)
             ->filters([
                 SelectFilter::make('sales_agent_id')
                     ->label('کارشناس فروش')
@@ -156,7 +164,35 @@ class CallsTable
                 RecordFollowUpAction::make(),
                 EditAction::make()->label('جزئیات'),
             ])
-            ->emptyStateHeading('تماسی نیست')
-            ->emptyStateDescription(null);
+            // an empty list says why it is empty and what to do next, tab by tab
+            ->emptyStateIcon(fn (HasTable $livewire): Heroicon => self::emptyState($livewire)[0])
+            ->emptyStateHeading(fn (HasTable $livewire): string => self::emptyState($livewire)[1])
+            ->emptyStateDescription(fn (HasTable $livewire): string => self::emptyState($livewire)[2])
+            ->emptyStateActions([
+                Action::make('createFromEmpty')
+                    ->label('ثبت تماس جدید')
+                    ->icon(Heroicon::Plus)
+                    ->url(fn (): string => CallResource::getUrl('create'))
+                    ->visible(fn (HasTable $livewire): bool => blank($livewire->getTableSearch())
+                        && in_array($livewire->activeTab ?? null, ['today', 'all', null], true)),
+            ]);
+    }
+
+    /**
+     * @return array{0: Heroicon, 1: string, 2: string}
+     */
+    private static function emptyState(HasTable $livewire): array
+    {
+        if (filled($livewire->getTableSearch())) {
+            return [Heroicon::OutlinedMagnifyingGlass, 'نتیجه ای پیدا نشد', 'با نام، شرکت یا شماره ی دیگری جستجو کنید.'];
+        }
+
+        return match ($livewire->activeTab ?? null) {
+            'today' => [Heroicon::OutlinedCheckCircle, 'امروز پیگیری ای نمانده', 'همه ی پیگیری های امروز انجام شده است.'],
+            'awaiting' => [Heroicon::OutlinedCheckCircle, 'تماسی در انتظار پیگیری نیست', 'همه ی مشتریان پیگیری شده اند.'],
+            'done' => [Heroicon::OutlinedPhone, 'هنوز تماسی پیگیری نشده', 'نتیجه ی هر پیگیری که ثبت کنید اینجا می آید.'],
+            'unreachable' => [Heroicon::OutlinedPhoneXMark, 'مشتری بی پاسخی نیست', 'مشتریانی که سه بار پاسخ ندهند اینجا می آیند.'],
+            default => [Heroicon::OutlinedPhone, 'هنوز تماسی ثبت نشده', 'اولین تماس مشتری را ثبت کنید.'],
+        };
     }
 }

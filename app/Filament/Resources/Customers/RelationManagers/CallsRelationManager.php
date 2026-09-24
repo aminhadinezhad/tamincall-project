@@ -7,6 +7,7 @@ use App\Models\Call;
 use App\Support\Persian;
 use Filament\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -44,7 +45,8 @@ class CallsRelationManager extends RelationManager
                     ->label('جزئیات')
                     ->url(fn (Call $record): string => CallResource::getUrl('edit', ['record' => $record])),
             ])
-            ->emptyStateHeading('تماسی ثبت نشده')
-            ->emptyStateDescription(null);
+            ->emptyStateIcon(Heroicon::OutlinedPhone)
+            ->emptyStateHeading('برای این مشتری تماسی ثبت نشده')
+            ->emptyStateDescription('تماس های بعدی این مشتری اینجا می آیند.');
     }
 }

@@ -53,6 +53,8 @@ class AdminPanelProvider extends PanelProvider
                 '<meta name="apple-mobile-web-app-title" content="تامین کال">',
                 '<link rel="apple-touch-icon" href="'.e(asset('ico/apple-touch-icon.png')).'">',
             ]))
+            // «ثبت تماس» sits beside the search on every page, so a new call is one click from anywhere
+            ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE, fn () => view('filament.quick-call'))
             ->darkMode(false)
             ->colors([
                 'primary' => Color::hex('#164194'),

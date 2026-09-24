@@ -275,6 +275,32 @@ class CallFollowUpTest extends TestCase
             ->assertCanNotSeeTableRecords([$kept]);
     }
 
+    public function test_an_empty_calls_list_says_why_it_is_empty(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+
+        Livewire::test(ListCalls::class, ['activeTab' => 'today'])->assertSee('امروز پیگیری ای نمانده');
+        Livewire::test(ListCalls::class, ['activeTab' => 'all'])->assertSee('هنوز تماسی ثبت نشده')->assertSee('ثبت تماس جدید');
+
+        $this->makeCall();
+        Livewire::test(ListCalls::class, ['activeTab' => 'all'])->searchTable('کسی که نیست')->assertSee('نتیجه ای پیدا نشد');
+    }
+
+    public function test_saving_a_call_says_when_it_comes_back_for_follow_up(): void
+    {
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($this->secretary());
+        $customer = Customer::create(['name' => 'مینا صدری', 'phone' => '09126660000', 'type' => CustomerType::Individual]);
+        $agent = SalesAgent::create(['name' => 'آقای نوری']);
+
+        Livewire::test(CreateCall::class)
+            ->fillForm(['customer_id' => $customer->id, 'sales_agent_id' => $agent->id, 'request' => 'لیوان کاغذی', 'source' => AcquisitionSource::Website->value, 'follow_up_in' => 1])
+            ->call('create')
+            ->assertHasNoFormErrors()
+            ->assertNotified('تماس مینا صدری ثبت شد');
+    }
+
     public function test_searching_the_calls_by_customer_name_narrows_the_list(): void
     {
         Filament::setCurrentPanel('admin');

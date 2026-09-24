@@ -767,3 +767,19 @@ a.fi-wi-stats-overview-stat:focus-visible,
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ==========================================================================
+   Quick «ثبت تماس» in the top bar
+   ========================================================================== */
+
+.tc-quick-call {
+    margin-inline-end: 8px;
+    white-space: nowrap;
+}
+
+/* on a phone the + alone, so the search keeps its room */
+@media (max-width: 639.98px) {
+    .tc-quick-call__label {
+        display: none;
+    }
+}
