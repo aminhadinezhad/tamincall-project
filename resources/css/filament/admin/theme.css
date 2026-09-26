@@ -181,20 +181,11 @@
     gap: 10px;
 }
 
-.tc-brand__mark {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--tc-radius);
-    background-color: var(--tc-canvas);
-    box-shadow: inset 0 0 0 1px var(--tc-border);
-}
-
+/* the logo on its own, no tile around it */
 .tc-brand__mark img {
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
 }
 
 .tc-brand__text {
@@ -739,14 +730,9 @@ a.fi-wi-stats-overview-stat:focus-visible,
     --tw-ring-color: transparent !important;
 }
 
-.fi-simple-header .tc-brand__mark {
+.fi-simple-header .tc-brand__mark img {
     width: 44px;
     height: 44px;
-}
-
-.fi-simple-header .tc-brand__mark img {
-    width: 34px;
-    height: 34px;
 }
 
 .fi-simple-header .tc-brand__text {
