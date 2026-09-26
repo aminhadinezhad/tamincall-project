@@ -50,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 '<meta name="mobile-web-app-capable" content="yes">',
                 '<meta name="apple-mobile-web-app-capable" content="yes">',
                 '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
-                '<meta name="apple-mobile-web-app-title" content="تامین کال">',
+                '<meta name="apple-mobile-web-app-title" content="TaminCall">',
                 '<link rel="apple-touch-icon" href="'.e(asset('ico/apple-touch-icon.png').'?v=3').'">',
             ]))
             // «ثبت تماس» sits beside the search on every page, so a new call is one click from anywhere
