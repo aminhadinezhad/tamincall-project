@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('تامین کال')
             ->brandLogo(fn () => view('filament.brand'))
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('ico/favicon-32x32.png'))
+            ->favicon(asset('ico/favicon-32x32.png').'?v=2')
             ->font('Kalameh', url: asset('css/fonts.css'), provider: LocalFontProvider::class)
             // the Tamin Falat look (resources/css/filament/admin/theme.css) is designed for light only
             ->viteTheme('resources/css/filament/admin/theme.css')
@@ -51,7 +51,7 @@ class AdminPanelProvider extends PanelProvider
                 '<meta name="apple-mobile-web-app-capable" content="yes">',
                 '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
                 '<meta name="apple-mobile-web-app-title" content="تامین کال">',
-                '<link rel="apple-touch-icon" href="'.e(asset('ico/apple-touch-icon.png')).'">',
+                '<link rel="apple-touch-icon" href="'.e(asset('ico/apple-touch-icon.png').'?v=2').'">',
             ]))
             // «ثبت تماس» sits beside the search on every page, so a new call is one click from anywhere
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE, fn () => view('filament.quick-call'))
